@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>我的花朵日記</title>
+<title>佩佩花朵日記</title>
 <meta name="theme-color" content="#e0567f">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="花朵日記">
+<meta name="apple-mobile-web-app-title" content="佩佩日記">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -35,7 +35,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);
 body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:560px;margin:0 auto;padding:16px 16px 24px}
-header.top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 4px;max-width:560px;margin:0 auto}
+header.top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 22px;max-width:560px;margin:0 auto}
 header.top h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.5px}
 header.top .who{margin-left:auto;font-size:13px;color:var(--muted)}
 .card{background:var(--card);border-radius:18px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow);border:1px solid var(--line)}
@@ -141,6 +141,17 @@ details.k .body li{margin:4px 0}
 .quiz .opt.right{background:var(--teal-soft);border-color:var(--teal)}
 .quiz .opt.wrong{background:var(--accent-soft);border-color:var(--accent)}
 .stars{font-size:22px;letter-spacing:2px}
+/* 貓咪 */
+.cat{display:inline-block;vertical-align:middle;flex:none}
+header.top h1{display:flex;align-items:center;gap:6px}
+.hero-card{position:relative}
+.hero-cat{position:absolute;right:8px;top:-38px;width:62px;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.hero-cat{animation:none}}
+.catsay{display:flex;gap:10px;align-items:flex-start}
+.catsay .bub{flex:1;background:var(--accent-soft);border-radius:4px 16px 16px 16px;padding:10px 12px}
+.catsay .bub h2{margin:0 0 4px}
+.empty .cat{display:block;margin:0 auto 6px}
 /* nav */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
 nav.tabs .in{display:flex;max-width:560px;width:100%}
@@ -168,13 +179,13 @@ body:not(.viewer) .viewer-only{display:none!important}
 </head>
 <body>
 <div id="viewbar" class="viewbar viewer-only"></div>
-<header class="top"><h1>🌸 <span id="appTitle">我的花朵日記</span></h1><div class="who" id="who"></div></header>
+<header class="top"><h1><span id="hdrCat"></span><span id="appTitle">佩佩花朵日記</span></h1><div class="who" id="who"></div></header>
 
 <!-- 歡迎頁 -->
 <div class="wrap hide" id="welcome">
   <div class="welcome">
-    <div class="logo">🌸</div>
-    <h2>歡迎來到花朵日記</h2>
+    <div class="logo" id="welCat"></div>
+    <h2>歡迎來到佩佩花朵日記</h2>
     <p class="muted">記錄月經、身體感覺和成長，<br>慢慢認識自己的身體。</p>
     <button class="btn pri big" onclick="startOwner()">我要記錄自己的日記</button>
     <button class="btn big" onclick="startViewerPrompt()">我是家人，要觀看分享的日記</button>
@@ -185,7 +196,7 @@ body:not(.viewer) .viewer-only{display:none!important}
   <!-- 今天 -->
   <section class="page on" id="p-today">
     <div id="banners"></div>
-    <div class="card"><div class="hero" id="hero"></div>
+    <div class="card hero-card"><div class="hero-cat" id="heroCat"></div><div class="hero" id="hero"></div>
       <div class="row owner-only" style="margin-top:14px" id="periodBtns"></div>
     </div>
     <div class="card">
@@ -235,7 +246,7 @@ body:not(.viewer) .viewer-only{display:none!important}
 
   <!-- 小知識 -->
   <section class="page" id="p-learn">
-    <div class="card"><h2>📚 月經小百科</h2><p class="small muted" style="margin:0">一次讀一點點就好，慢慢了解自己的身體。讀完可以到最下面做小測驗！</p></div>
+    <div class="card"><div class="catsay"><span id="learnCat"></span><div class="bub"><h2>📚 月經小百科</h2><p class="small" style="margin:0">喵～一次讀一點點就好，慢慢了解自己的身體。讀完可以到最下面做小測驗喔！</p></div></div></div>
     <div id="learn"></div>
   </section>
 
@@ -321,7 +332,7 @@ body:not(.viewer) .viewer-only{display:none!important}
       <h2>🎨 外觀</h2>
       <div class="chips" id="themeChips"></div>
     </div>
-    <p class="small muted" style="text-align:center">花朵日記只是幫忙記錄和學習的工具，不能取代醫生。<br>身體有任何擔心，記得告訴爸媽或學校護理師。</p>
+    <p class="small muted" style="text-align:center">佩佩花朵日記只是幫忙記錄和學習的工具，不能取代醫生。<br>身體有任何擔心，記得告訴爸媽或學校護理師。</p>
   </section>
 </main>
 
@@ -353,6 +364,32 @@ const secret=()=>{const a=new Uint8Array(12);crypto.getRandomValues(a);return Ar
 const FLOW=[{n:'沒有',i:'—'},{n:'一點點',i:'·'},{n:'少',i:'💧'},{n:'中',i:'💧💧'},{n:'多',i:'💧💧💧'}];
 const SYM=['肚子痛','頭痛','腰痠','身體痠痛','胸部脹痛','疲倦想睡','長痘痘','肚子脹','想吐','頭暈','想吃甜食','分泌物變多','冒冷汗','拉肚子'];
 const MOOD=[['😄','開心'],['🙂','還好'],['😐','普通'],['😢','難過'],['😠','煩躁'],['😴','好累']];
+
+/* ========= 可愛貓咪（純 SVG） ========= */
+function catSvg(size=80,mood='happy',full=false){
+  const eyes={happy:'<path d="M38 62q6-8 12 0M70 62q6-8 12 0" fill="none" stroke="#5b3a2e" stroke-width="3.5" stroke-linecap="round"/>',
+    normal:'<circle cx="44" cy="61" r="5.5" fill="#5b3a2e"/><circle cx="76" cy="61" r="5.5" fill="#5b3a2e"/><circle cx="46" cy="59" r="1.8" fill="#fff"/><circle cx="78" cy="59" r="1.8" fill="#fff"/>',
+    sleepy:'<path d="M38 63q6 5 12 0M70 63q6 5 12 0" fill="none" stroke="#5b3a2e" stroke-width="3.5" stroke-linecap="round"/>',
+    wink:'<path d="M38 62q6-8 12 0" fill="none" stroke="#5b3a2e" stroke-width="3.5" stroke-linecap="round"/><circle cx="76" cy="61" r="5.5" fill="#5b3a2e"/><circle cx="78" cy="59" r="1.8" fill="#fff"/>'}[mood]||'';
+  const head=`<path d="M20 50L26 10L54 32Z M100 50L94 10L66 32Z" fill="#ffd9a8" stroke="#5b3a2e" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M27 38L30 20L44 32Z M93 38L90 20L76 32Z" fill="#f7a1b8"/>
+    <ellipse cx="60" cy="64" rx="44" ry="37" fill="#ffd9a8" stroke="#5b3a2e" stroke-width="3"/>
+    <path d="M52 30v8M60 28v10M68 30v8" stroke="#e9a868" stroke-width="3.5" stroke-linecap="round"/>
+    ${eyes}<ellipse cx="34" cy="76" rx="7" ry="4.5" fill="#f7a1b8" opacity=".8"/><ellipse cx="86" cy="76" rx="7" ry="4.5" fill="#f7a1b8" opacity=".8"/>
+    <path d="M56 70h8l-4 5z" fill="#e0567f"/><path d="M60 75q-4 6-9 3M60 75q4 6 9 3" fill="none" stroke="#5b3a2e" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M12 68h16M14 76l14-3M108 68h-16M106 76l-14-3" stroke="#5b3a2e" stroke-width="2" stroke-linecap="round"/>
+    <g transform="translate(94 22)">${[0,72,144,216,288].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*6).toFixed(1)}" cy="${(Math.sin(a*Math.PI/180)*6).toFixed(1)}" r="5" fill="#e0567f"/>`).join('')}<circle r="3.6" fill="#fff3c4"/></g>`;
+  if(!full)return `<svg class="cat" width="${size}" height="${size}" viewBox="0 0 120 108" aria-hidden="true">${head}</svg>`;
+  return `<svg class="cat" width="${size}" height="${size*1.25}" viewBox="0 0 140 175" aria-hidden="true">
+    <path d="M112 150q30-6 22-40q-4-14-14-8q8 6 6 22q-2 16-20 18" fill="#ffd9a8" stroke="#5b3a2e" stroke-width="3" stroke-linejoin="round"/>
+    <ellipse cx="70" cy="132" rx="42" ry="36" fill="#ffd9a8" stroke="#5b3a2e" stroke-width="3"/>
+    <ellipse cx="70" cy="138" rx="22" ry="22" fill="#fff3e2"/>
+    <path d="M44 164q0-14 12-14q12 0 12 14z M72 164q0-14 12-14q12 0 12 14z" fill="#ffd9a8" stroke="#5b3a2e" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M52 158v6M60 158v6M80 158v6M88 158v6" stroke="#5b3a2e" stroke-width="2"/>
+    <path d="M50 104q20 10 40 0" fill="none" stroke="#e0567f" stroke-width="7" stroke-linecap="round"/><circle cx="70" cy="110" r="5" fill="#ffd45a" stroke="#5b3a2e" stroke-width="2"/>
+    <g transform="translate(10 0)">${head}</g></svg>`;
+}
+
 const FACES=['😊','🙂','🙂','🙂','😕','😣','😣','😖','😖','😭','😭'];
 
 /* ========= 儲存 ========= */
@@ -447,6 +484,7 @@ function renderHero(){
   $('#hero').innerHTML=`<div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--accent-soft)" stroke-width="12"/>
     <circle cx="60" cy="60" r="${r}" fill="none" stroke="${c.ongoing?'var(--accent)':'var(--ov)'}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C*frac} ${C}"/></svg>
     <div class="in"><b>${big}</b><span>${sub}</span></div></div><div><p class="t">${t}</p><p class="s">${s}</p></div>`;
+  $('#heroCat').innerHTML=catSvg(62,!c.last?'normal':c.ongoing?'sleepy':ovToday(c)?'wink':'happy');
   $('#periodBtns').innerHTML=c.ongoing
     ?`<button class="btn big" onclick="periodEnd()">✨ 月經結束了</button>`
     :`<button class="btn pri big" onclick="periodStart()">🩸 月經來了</button>`;
@@ -518,7 +556,7 @@ const TIPS=['月經的英文是 period，正式說法是 menstruation。','衛�
  '月經期間可以運動，散步、伸展都能讓肚子比較舒服。','多吃深綠色蔬菜、豆類、瘦肉，可以補充鐵質。','剛開始來月經的前幾年，週期不規律是很正常的。','睡前換上夜用型衛生棉，就不用擔心半夜外漏。',
  '如果不小心弄髒褲子，用冷水先沖，比熱水更容易洗乾淨。','書包裡隨時放 1–2 片衛生棉和一件備用內褲，安心很多。','“I’m on my period.” 意思是「我月經來了」。','記錄身體的感覺，可以幫你找到自己的規律。'];
 function renderTip(){const i=Math.floor(Date.now()/864e5)%TIPS.length;
-  $('#tipCard').innerHTML=`<h2>💡 今日小知識</h2><p style="margin:0">${TIPS[i]}</p><button class="btn ghost" style="margin-top:10px" onclick="go('learn')">看更多 →</button>`}
+  $('#tipCard').innerHTML=`<div class="catsay">${catSvg(58,'normal')}<div class="bub"><h2>💡 貓咪小知識</h2><p style="margin:0">${TIPS[i]}</p></div></div><button class="btn ghost" style="margin-top:10px;width:100%" onclick="go('learn')">看更多 →</button>`}
 
 /* ========= 月曆 ========= */
 function calMove(n){calYM.setMonth(calYM.getMonth()+n);renderCal()}
@@ -536,7 +574,7 @@ function renderCal(){
   $('#perList').innerHTML=c.P.length?c.P.slice().reverse().map((p,i,a)=>{const nx=c.P[c.P.length-i];
     const cl=nx?diff(p.start,nx.start):null;
     return `<div class="it"><span style="font-size:18px">🩸</span><div><b>${mdw(p.start)}</b><div class="small muted">來了 ${p.len} 天${cl?`・週期 ${cl} 天`:'・這一次'}</div></div></div>`}).join('')
-    :'<div class="empty">還沒有月經記錄</div>';
+    :`<div class="empty">${catSvg(52,'normal')}還沒有月經記錄</div>`;
 }
 function pickDay(k){if(k>todayS()){toast('還沒到的日子不能記錄喔');return}selDate=k;go('today');renderDay()}
 
@@ -557,7 +595,7 @@ function barChart(items,{h=170,band=null,unit='天',color='var(--accent)',maxY=n
     if(i%step===0)g+=`<text x="${x}" y="${H-8}" text-anchor="middle">${it.l}</text>`});
   return `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}</svg>`;
 }
-const EMPTY=t=>`<div class="empty">${t}</div>`;
+const EMPTY=t=>`<div class="empty">${catSvg(52,'sleepy')}${t}</div>`;
 function renderCharts(){
   const c=calc(),d=D(),days=d.days||{},T=c.T;
   /* 摘要 */
@@ -670,7 +708,7 @@ function renderShare(){
   h+=`<div class="switch"><span>分享悄悄話日記</span><input type="checkbox" ${sh.notes?'checked':''} onchange="S.share.notes=this.checked;save();renderDay()"></div>`;
   if(!sh.on)h+=`<button class="btn pri" style="width:100%;margin-top:8px" onclick="startShare()">開始分享</button>`;
   else{h+=`<p class="small" style="margin:10px 0 0">✅ 分享中，把這個連結傳給你信任的人：</p><div class="codebox">${esc(shareLink())}</div>
-    <div class="row"><button class="btn pri" onclick="copyText(shareLink(),'連結已複製')">📋 複製連結</button>${navigator.share?`<button class="btn" onclick="navigator.share({title:'花朵日記',url:shareLink()}).catch(()=>{})">📤 傳送</button>`:''}
+    <div class="row"><button class="btn pri" onclick="copyText(shareLink(),'連結已複製')">📋 複製連結</button>${navigator.share?`<button class="btn" onclick="navigator.share({title:'佩佩花朵日記',url:shareLink()}).catch(()=>{})">📤 傳送</button>`:''}
     <button class="btn" onclick="pushShare(true)">🔄 立即更新</button></div>
     <p class="note">最後上傳：${sh.last?new Date(sh.last).toLocaleString('zh-TW'):'—'}。你每次記錄後會自動更新。</p>
     <div class="row" style="margin-top:8px"><button class="btn ghost" onclick="revokeShare(true)">🔁 換一個新連結</button><button class="btn ghost" onclick="revokeShare(false)">⛔ 停止分享</button></div>
@@ -712,7 +750,7 @@ async function askNotify(){if(!('Notification' in window)){alert('這個瀏覽�
 async function notify(title,body){try{const r=await navigator.serviceWorker?.ready;if(r)r.showNotification(title,{body,icon:'icon-180.png',badge:'icon-180.png'});else new Notification(title,{body})}catch(e){try{new Notification(title,{body})}catch(_){}}}
 async function checkNotify(){if(!('Notification' in window)||Notification.permission!=='granted')return;
   for(const b of reminders()){const key=b.k+'@'+todayS();if(S.notified[key])continue;S.notified[key]=1;
-    notify(b.cls==='o'?'🌙 排卵期提醒':b.cls==='p'?'🎒 月經快來了':'🌸 花朵日記',b.t)}
+    notify(b.cls==='o'?'🌙 排卵期提醒':b.cls==='p'?'🎒 月經快來了':'🌸 佩佩花朵日記',b.t)}
   for(const k in S.notified)if(!k.endsWith(todayS()))delete S.notified[k];await kvSet('state',S)}
 function exportIcs(){const c=calc(),d=D();if(!c.last){alert('記錄過月經後才能預估喔');return}
   const rem=d.settings?.remind||2,nm=isViewer()?(d.profile?.name||'她')+'的':'',f=s=>s.replace(/-/g,''),now=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
@@ -724,17 +762,17 @@ function exportIcs(){const c=calc(),d=D();if(!c.last){alert('記錄過月經後�
       `SUMMARY:🌙 ${nm}排卵期（預估）`,'DESCRIPTION:分泌物可能變多，是正常的身體變化',
       'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:排卵期（預估）','TRIGGER:PT9H','END:VALARM','END:VEVENT'].join('\r\n'))});
   const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//period-log//zh-TW','CALSCALE:GREGORIAN',...ev,'END:VCALENDAR'].join('\r\n');
-  download(new Blob([ics],{type:'text/calendar'}),'花朵日記提醒.ics');
+  download(new Blob([ics],{type:'text/calendar'}),'佩佩花朵日記提醒.ics');
   toast('打開下載的檔案，就能加入行事曆')}
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
 
 /* ========= 備份 ========= */
 const backupData=()=>JSON.stringify({app:'period-log',v:1,profile:S.profile,growth:S.growth,days:S.days,settings:S.settings,quizBest:S.quizBest});
-function exportJson(){download(new Blob([backupData()],{type:'application/json'}),`花朵日記備份_${todayS()}.json`)}
+function exportJson(){download(new Blob([backupData()],{type:'application/json'}),`佩佩花朵日記備份_${todayS()}.json`)}
 function copyJson(){copyText(backupData(),'備份文字已複製，可以貼到備忘錄保存')}
 function restore(txt){try{const j=JSON.parse(txt);if(j.app!=='period-log')throw 0;if(!confirm('用備份覆蓋目前的資料？'))return;
   Object.assign(S,{profile:j.profile||S.profile,growth:j.growth||[],days:j.days||{},quizBest:j.quizBest||0});S.settings=Object.assign(S.settings,j.settings||{});
-  S.role='owner';save();boot();toast('還原完成！')}catch(e){alert('這不是花朵日記的備份檔')}}
+  S.role='owner';save();boot();toast('還原完成！')}catch(e){alert('這不是佩佩花朵日記的備份檔')}}
 function importJson(inp){const f=inp.files[0];if(!f)return;f.text().then(restore);inp.value=''}
 function importText(){restore($('#impText').value)}
 
@@ -789,7 +827,7 @@ const LEARN=[
  {ic:'💡',t:'月經期間要注意什麼？',h:`<ul><li>🛁 <b>可以洗澡、洗頭</b>！用淋浴比較好，下面用清水輕輕洗就好，不需要用特別的清潔劑。</li>
   <li>🍲 <b>均衡飲食</b>：多吃深綠色蔬菜、豆類、蛋、瘦肉、魚，補充鐵質；少喝含咖啡因的飲料。</li><li>💧 <b>多喝溫水</b>，可以減少肚子脹。</li>
   <li>🧣 <b>注意保暖</b>，尤其是肚子和腰。冰的東西如果吃了會不舒服，就先少吃。</li><li>🚶‍♀️ <b>可以運動</b>：散步、伸展、瑜伽都很好；不舒服時就休息，不用勉強。</li>
-  <li>😴 <b>早點睡</b>，睡飽了經痛和心情都會好一些。</li><li>📝 <b>記錄下來</b>：每天在花朵日記記一下，慢慢就能了解自己的規律。</li></ul>`},
+  <li>😴 <b>早點睡</b>，睡飽了經痛和心情都會好一些。</li><li>📝 <b>記錄下來</b>：每天在佩佩花朵日記記一下，慢慢就能了解自己的規律。</li></ul>`},
  {ic:'😣',t:'經痛怎麼辦？',h:`<p>月經時肚子悶悶痛、腰痠，是因為子宮在收縮，把內膜推出來。很多女生都會有，通常第 1–2 天最明顯。</p>
   <ul><li>🔥 用<b>熱水袋或暖暖包</b>熱敷下腹部（隔著衣服，小心燙傷）。</li><li>👐 順時針<b>輕輕按摩</b>肚子。</li><li>🧘‍♀️ 做些輕鬆的<b>伸展</b>，或側躺把膝蓋縮起來。</li>
   <li>🍵 喝杯溫溫的飲料，好好休息。</li><li>💊 如果痛到影響上課，<b>請爸媽或醫生</b>幫你選合適的止痛藥，<b>不要自己亂吃藥</b>。</li></ul>`},
@@ -798,7 +836,7 @@ const LEARN=[
   <p>剛開始來月經的前幾年，排卵常常還不規律，所以 App 上的排卵期只是<b>大概的預估</b>。分泌物多的日子，可以用<b>護墊</b>保持乾爽。</p>
   <p>⚠️ 如果分泌物變成<b>黃綠色、有怪味、或下面很癢</b>，要告訴大人去看醫生。</p>`},
  {ic:'🌈',t:'月經前的煩躁：經前症候群（PMS）',h:`<p>月經來之前幾天，身體的荷爾蒙會變化，有些人會：</p><ul><li>容易生氣、想哭、心情低落</li><li>胸部脹痛、肚子脹</li><li>長痘痘、特別想吃甜的</li><li>覺得很累</li></ul>
-  <p>這叫做<b>經前症候群（PMS）</b>，月經來了之後通常就會好轉。這不是你的錯，跟家人說「我月經快來了，有點煩」，大家會更了解你 🤗。在花朵日記記錄心情，可以看看自己是不是也有這個規律。</p>`},
+  <p>這叫做<b>經前症候群（PMS）</b>，月經來了之後通常就會好轉。這不是你的錯，跟家人說「我月經快來了，有點煩」，大家會更了解你 🤗。在佩佩花朵日記記錄心情，可以看看自己是不是也有這個規律。</p>`},
  {ic:'🧒',t:'青春期身體的其他變化',h:`<ul><li>🌱 <b>長高、體重增加</b>：這是身體在長大、需要更多能量，非常正常。不要因為體重變多就不吃飯，吃得均衡最重要。</li>
   <li>👙 <b>胸部發育</b>：可能會有點脹痛，可以換穿舒服的少女內衣。</li><li>🌿 <b>腋下和私密處長出毛髮</b>。</li><li>💦 <b>流汗變多</b>：每天洗澡、換乾淨衣服。</li>
   <li>😖 <b>長痘痘</b>：每天用溫和的洗面乳洗臉，不要用手擠。</li><li>💭 <b>心情容易起伏</b>：有煩惱可以跟信任的大人聊聊。</li></ul>
@@ -807,7 +845,7 @@ const LEARN=[
   <li>月經<b>超過 7 天</b>還沒結束</li><li><b>每 1–2 小時</b>就要換一片，而且整片濕透</li><li>血塊比<b>一元硬幣</b>還大</li>
   <li>經痛痛到<b>沒辦法上學</b>，或熱敷、休息都沒用</li><li>常常<b>頭暈、臉色蒼白、很容易累</b>（可能是貧血）</li>
   <li>兩次月經<b>間隔少於 21 天</b>，或已經規律後又<b>超過 3 個月</b>沒來</li><li>分泌物顏色奇怪、有怪味、很癢</li></ul>
-  <p>看婦產科不用害怕，醫生通常會先問問題、聽你說，很多時候不需要做檢查。你可以把花朵日記的圖表給醫生看，對醫生很有幫助！</p>`},
+  <p>看婦產科不用害怕，醫生通常會先問問題、聽你說，很多時候不需要做檢查。你可以把佩佩花朵日記的圖表給醫生看，對醫生很有幫助！</p>`},
  {ic:'❓',t:'常見問題 Q&A',h:`<p><b>Q：月經來可以上體育課嗎？</b><br>A：可以！適度運動還能減輕經痛。真的很不舒服就跟老師說要休息。</p>
   <p><b>Q：可以游泳嗎？</b><br>A：使用衛生棉不能下水（會吸水）。這幾天可以先休息，或之後和媽媽討論其他月經用品。</p>
   <p><b>Q：別人看得出來我月經來了嗎？</b><br>A：看不出來的！衛生棉很薄，穿好就不明顯。</p>
@@ -830,27 +868,28 @@ const QUIZ=[
 let qi=0,qScore=0,qAns=false;
 function renderQuiz(){const el=$('#quiz');if(!el)return;
   if(qi>=QUIZ.length){const st=Math.round(qScore/QUIZ.length*5);if(qScore>S.quizBest&&!isViewer()){S.quizBest=qScore;save()}
-    el.innerHTML=`<p class="stars">${'⭐'.repeat(st)}${'☆'.repeat(5-st)}</p><p><b>答對 ${qScore} / ${QUIZ.length} 題！</b>${qScore===QUIZ.length?' 太厲害了，你是月經小博士 🎓':' 再讀讀上面的小知識，下次一定更好！'}</p>
+    el.innerHTML=`${catSvg(80,qScore>=8?'happy':'wink',true)}<p class="stars">${'⭐'.repeat(st)}${'☆'.repeat(5-st)}</p><p><b>答對 ${qScore} / ${QUIZ.length} 題！</b>${qScore===QUIZ.length?' 太厲害了，你是月經小博士 🎓':' 再讀讀上面的小知識，下次一定更好！'}</p>
     <p class="small muted">最佳紀錄：${Math.max(S.quizBest,qScore)} 題</p><button class="btn pri" onclick="qi=0;qScore=0;renderQuiz()">再玩一次</button>`;return}
   const [q,o]=QUIZ[qi];qAns=false;
   el.innerHTML=`<p class="small muted" style="margin:0">第 ${qi+1} / ${QUIZ.length} 題</p><p class="q">${q}</p>${o.map((t,i)=>`<button class="opt" onclick="answer(${i},this)">${t}</button>`).join('')}<p id="qExp" class="small"></p>`}
 function answer(i,el){if(qAns)return;qAns=true;const [,,a,exp]=QUIZ[qi];const btns=document.querySelectorAll('#quiz .opt');
   btns[a].classList.add('right');if(i!==a)el.classList.add('wrong');else qScore++;
   $('#qExp').innerHTML=(i===a?'✅ 答對了！':'💡 ')+exp+`<br><button class="btn" style="margin-top:8px" onclick="qi++;renderQuiz()">${qi+1<QUIZ.length?'下一題 →':'看結果'}</button>`}
-function renderLearn(){$('#learn').innerHTML=LEARN.map(x=>`<details class="k"><summary><span class="ic">${x.ic}</span>${x.t}</summary><div class="body">${x.h}</div></details>`).join('')+
+function renderLearn(){$('#learnCat').innerHTML=catSvg(58,'wink');$('#learn').innerHTML=LEARN.map(x=>`<details class="k"><summary><span class="ic">${x.ic}</span>${x.t}</summary><div class="body">${x.h}</div></details>`).join('')+
   `<details class="k" open><summary><span class="ic">🎓</span>月經小博士測驗</summary><div class="body quiz" id="quiz"></div></details>`;renderQuiz()}
 
 /* ========= 啟動 ========= */
 function renderAll(){
   const v=isViewer(),d=D(),nm=d.profile?.name;
   document.body.classList.toggle('viewer',v);
-  $('#appTitle').textContent=v?`${nm||'她'}的花朵日記`:'我的花朵日記';
+  $('#appTitle').textContent='佩佩花朵日記';
   $('#who').textContent=!v&&S.profile.birthday?ageText(S.profile.birthday).replace(/ \d+ 個月/,''):'';
   if(v&&VIEW)$('#viewbar').textContent=`👀 你正在觀看 ${nm||'她'} 分享的日記（只能看，不能改）`;
   renderBanners();renderHero();renderDay();renderTip();renderMe();
   if($('#p-cal').classList.contains('on'))renderCal();if($('#p-chart').classList.contains('on'))renderCharts();
 }
 function boot(){
+  $('#hdrCat').innerHTML=catSvg(30,'happy');$('#welCat').innerHTML=catSvg(130,'happy',true);
   const needWelcome=!S.role;$('#welcome').classList.toggle('hide',!needWelcome);$('#app').classList.toggle('hide',needWelcome);$('#tabs').classList.toggle('hide',needWelcome);
   applyTheme();if(needWelcome)return;
   selDate=todayS();renderAll();

@@ -1,6 +1,6 @@
 {
-  "name": "我的花朵日記",
-  "short_name": "花朵日記",
+  "name": "佩佩花朵日記",
+  "short_name": "佩佩日記",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#fff7f9",
