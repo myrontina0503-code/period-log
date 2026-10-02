@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>我的花朵日記</title>
+<meta name="theme-color" content="#e0567f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="花朵日記">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{
+  --bg:#fff7f9;--card:#ffffff;--ink:#3a2a33;--muted:#8a7480;--line:#f1dfe6;
+  --accent:#e0567f;--accent-ink:#fff;--accent-soft:#fde4ec;--pred:#f7b9cb;
+  --ov:#7f6bd6;--ov-soft:#ece8fb;--teal:#2f9e8f;--teal-soft:#dff3ef;--warn:#c98a12;--warn-soft:#fff3d6;
+  --shadow:0 2px 10px rgba(160,60,100,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1d1519;--card:#2a1f25;--ink:#f6e9ef;--muted:#b49aa7;--line:#3d2d35;
+  --accent:#ff7aa2;--accent-ink:#2a0d18;--accent-soft:#4a2433;--pred:#7a3a52;
+  --ov:#a99bf0;--ov-soft:#2f2a4a;--teal:#5cc9b8;--teal-soft:#1d3a36;--warn:#f0b84a;--warn-soft:#3d3018;
+  --shadow:none;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1d1519;--card:#2a1f25;--ink:#f6e9ef;--muted:#b49aa7;--line:#3d2d35;
+  --accent:#ff7aa2;--accent-ink:#2a0d18;--accent-soft:#4a2433;--pred:#7a3a52;
+  --ov:#a99bf0;--ov-soft:#2f2a4a;--teal:#5cc9b8;--teal-soft:#1d3a36;--warn:#f0b84a;--warn-soft:#3d3018;
+  --shadow:none;color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  -webkit-text-size-adjust:100%;line-height:1.55}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 24px}
+header.top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 4px;max-width:560px;margin:0 auto}
+header.top h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.5px}
+header.top .who{margin-left:auto;font-size:13px;color:var(--muted)}
+.card{background:var(--card);border-radius:18px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.card h2{font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:6px}
+.card h2 small{margin-left:auto;font-weight:400;color:var(--muted);font-size:12px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:10px 14px;background:var(--accent-soft);color:var(--ink);font-weight:600;cursor:pointer}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.btn.big{padding:14px 16px;font-size:16px;flex:1}
+.btn:disabled{opacity:.45}
+input[type=text],input[type=number],input[type=date],input[type=url],textarea,select{
+  width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);outline:none}
+input:focus,textarea:focus{border-color:var(--accent)}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer;user-select:none}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.ov.on{background:var(--ov);border-color:var(--ov);color:#fff}
+/* hero */
+.hero{display:flex;gap:16px;align-items:center}
+.ring{width:118px;height:118px;flex:none;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .in b{font-size:30px;line-height:1}
+.ring .in span{font-size:12px;color:var(--muted)}
+.hero .t{font-size:20px;font-weight:700;margin:0 0 4px}
+.hero .s{font-size:14px;color:var(--muted);margin:0}
+.banner{border-radius:14px;padding:10px 12px;margin:0 0 10px;font-size:14px;display:flex;gap:8px;align-items:flex-start}
+.banner.p{background:var(--accent-soft)}.banner.o{background:var(--ov-soft)}.banner.w{background:var(--warn-soft)}.banner.t{background:var(--teal-soft)}
+/* day nav */
+.daynav{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.daynav button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:18px;cursor:pointer}
+.daynav .d{flex:1;text-align:center;font-weight:700;position:relative}
+.daynav input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.flow .chip{text-align:center;padding:8px 2px;border-radius:12px;font-size:13px}
+.flow .chip i{display:block;font-style:normal;font-size:15px;letter-spacing:-2px;height:20px}
+.pain{display:flex;align-items:center;gap:10px}
+.pain input{flex:1;accent-color:var(--accent)}
+.pain .face{font-size:28px;width:40px;text-align:center}
+.mood{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.mood .chip{text-align:center;padding:6px 0;border-radius:12px;font-size:12px}
+.mood .chip b{display:block;font-size:22px;font-weight:400}
+.saved{font-size:12px;color:var(--teal);height:16px;text-align:right}
+/* calendar */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.calhead button{border:0;background:var(--accent-soft);border-radius:10px;width:36px;height:36px;font-size:18px;cursor:pointer}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.grid7 .wd{font-size:12px;color:var(--muted);padding:2px 0}
+.cd{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:15px;cursor:pointer;position:relative;border:2px solid transparent}
+.cd.out{opacity:.25}
+.cd.per{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.cd.spot{background:var(--accent-soft)}
+.cd.pred{background:repeating-linear-gradient(45deg,var(--accent-soft),var(--accent-soft) 4px,transparent 4px,transparent 8px);border:2px dashed var(--pred)}
+.cd.ovw{background:var(--ov-soft)}
+.cd.ovd{background:var(--ov);color:#fff;font-weight:700}
+.cd.today{border-color:var(--ink)}
+.cd .dot{width:5px;height:5px;border-radius:50%;background:var(--teal);position:absolute;bottom:5px}
+.cd.per .dot{background:var(--accent-ink)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:12px;color:var(--muted);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+/* stats */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .v{font-size:24px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:13px;font-weight:400;color:var(--muted);margin-left:2px}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{font-size:10px;fill:var(--muted);font-family:inherit}
+svg.chart .grid{stroke:var(--line);stroke-width:1}
+.empty{padding:22px 8px;text-align:center;color:var(--muted);font-size:14px}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
+/* knowledge */
+details.k{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 10px;box-shadow:var(--shadow);overflow:hidden}
+details.k summary{list-style:none;padding:14px 16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px}
+details.k summary::-webkit-details-marker{display:none}
+details.k summary .ic{font-size:22px;width:30px;text-align:center}
+details.k summary::after{content:"＋";margin-left:auto;color:var(--muted);font-weight:400}
+details.k[open] summary::after{content:"－"}
+details.k .body{padding:0 16px 16px;font-size:15px}
+details.k .body p{margin:6px 0}
+details.k .body ul,details.k .body ol{padding-left:20px;margin:6px 0}
+details.k .body li{margin:4px 0}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:7px 4px;text-align:left;vertical-align:top}
+.tbl th{color:var(--muted);font-weight:600;font-size:12px}
+.vocab{display:grid;gap:8px}
+.vocab .w{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--bg)}
+.vocab .w b{font-size:16px}
+.vocab .w .zh{font-size:13px;color:var(--muted)}
+.vocab .w button{margin-left:auto;border:0;background:var(--accent-soft);border-radius:50%;width:34px;height:34px;cursor:pointer;flex:none}
+.steps{counter-reset:s;list-style:none;padding:0!important}
+.steps li{counter-increment:s;padding-left:34px;position:relative;margin:10px 0!important}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.ill{display:block;margin:8px auto;max-width:300px;width:100%}
+.ill text{font-size:11px;fill:var(--ink);font-family:inherit}
+.check li{list-style:none;margin-left:-20px}
+.quiz .q{font-weight:700;margin:4px 0 10px}
+.quiz .opt{display:block;width:100%;text-align:left;margin:6px 0;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;cursor:pointer}
+.quiz .opt.right{background:var(--teal-soft);border-color:var(--teal)}
+.quiz .opt.wrong{background:var(--accent-soft);border-color:var(--accent)}
+.stars{font-size:22px;letter-spacing:2px}
+/* nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav.tabs .in{display:flex;max-width:560px;width:100%}
+nav.tabs button{flex:1;border:0;background:none;padding:8px 0 9px;font-size:11px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px}
+nav.tabs button b{font-size:21px;font-weight:400;line-height:1.2;filter:grayscale(.7);opacity:.7}
+nav.tabs button.on{color:var(--accent);font-weight:700}
+nav.tabs button.on b{filter:none;opacity:1}
+.page{display:none}.page.on{display:block}
+.viewbar{background:var(--ov-soft);color:var(--ink);font-size:13px;text-align:center;padding:6px 12px}
+.list .it{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.list .it:last-child{border-bottom:0}
+.list .it .x{margin-left:auto;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.switch{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:10px}
+.switch input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.codebox{word-break:break-all;font-size:12px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px;margin:8px 0}
+.welcome{text-align:center;padding-top:40px}
+.welcome .logo{font-size:64px}
+.welcome .btn{display:block;width:100%;margin:10px 0}
+.hide{display:none!important}
+body.viewer .owner-only{display:none!important}
+body:not(.viewer) .viewer-only{display:none!important}
+.sum{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.sum dt{color:var(--muted)}.sum dd{margin:0}
+</style>
+</head>
+<body>
+<div id="viewbar" class="viewbar viewer-only"></div>
+<header class="top"><h1>🌸 <span id="appTitle">我的花朵日記</span></h1><div class="who" id="who"></div></header>
+
+<!-- 歡迎頁 -->
+<div class="wrap hide" id="welcome">
+  <div class="welcome">
+    <div class="logo">🌸</div>
+    <h2>歡迎來到花朵日記</h2>
+    <p class="muted">記錄月經、身體感覺和成長，<br>慢慢認識自己的身體。</p>
+    <button class="btn pri big" onclick="startOwner()">我要記錄自己的日記</button>
+    <button class="btn big" onclick="startViewerPrompt()">我是家人，要觀看分享的日記</button>
+  </div>
+</div>
+
+<main class="wrap" id="app">
+  <!-- 今天 -->
+  <section class="page on" id="p-today">
+    <div id="banners"></div>
+    <div class="card"><div class="hero" id="hero"></div>
+      <div class="row owner-only" style="margin-top:14px" id="periodBtns"></div>
+    </div>
+    <div class="card">
+      <div class="daynav">
+        <button onclick="shiftDay(-1)" aria-label="前一天">‹</button>
+        <div class="d"><span id="dayLabel"></span><input type="date" id="dayPick" onchange="if(this.value){selDate=this.value;renderDay()}"></div>
+        <button onclick="shiftDay(1)" aria-label="後一天">›</button>
+      </div>
+      <div id="dayForm"></div>
+    </div>
+    <div class="card" id="tipCard"></div>
+  </section>
+
+  <!-- 月曆 -->
+  <section class="page" id="p-cal">
+    <div class="card">
+      <div class="calhead"><button onclick="calMove(-1)">‹</button><b id="calTitle"></b><button onclick="calMove(1)">›</button></div>
+      <div class="grid7" id="calGrid"></div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>月經</span>
+        <span><i style="background:var(--accent-soft)"></i>一點點</span>
+        <span><i style="border:2px dashed var(--pred)"></i>預估月經</span>
+        <span><i style="background:var(--ov)"></i>預估排卵日</span>
+        <span><i style="background:var(--ov-soft)"></i>排卵期</span>
+        <span><i style="background:var(--teal);border-radius:50%;width:7px;height:7px"></i>有身體記錄</span>
+      </div>
+      <p class="note">點日期可以查看或補記那天的狀況。預估只是參考，青春期的月經常常不規律，這是正常的喔。</p>
+    </div>
+    <div class="card"><h2>📋 月經紀錄<small id="perCount"></small></h2><div class="list" id="perList"></div></div>
+  </section>
+
+  <!-- 圖表 -->
+  <section class="page" id="p-chart">
+    <div class="tiles" id="tiles"></div>
+    <div class="card"><h2>🔁 每次週期有幾天<small>正常範圍 21–45 天</small></h2><div id="chCycle"></div>
+      <p class="note">從這次月經第一天，數到下次月經第一天。粉紅色帶是青少年常見的範圍。</p></div>
+    <div class="card"><h2>🩸 每次月經來幾天<small>常見 2–7 天</small></h2><div id="chLen"></div></div>
+    <div class="card"><h2>📈 最近 60 天的身體不舒服程度</h2><div id="chPain"></div>
+      <p class="note">粉紅色區塊是月經期間，線是你記錄的不舒服程度（0–10）。看看月經前後有沒有特別不舒服？</p></div>
+    <div class="card"><h2>🤕 月經第幾天最不舒服？</h2><div id="chPainDay"></div></div>
+    <div class="card"><h2>🧩 最常出現的身體感覺<small>最近 90 天</small></h2><div id="chSym"></div>
+      <p class="note">深色＝月經期間出現的次數，淺色＝其他日子。可以發現哪些不舒服是跟著月經來的。</p></div>
+    <div class="card"><h2>😊 心情分布<small>最近 90 天</small></h2><div id="chMood"></div></div>
+    <div class="card" id="growthCard"><h2>🌱 成長記錄</h2><div id="chGrowth"></div>
+      <p class="note">青春期長高、體重增加是身體在長大，是好事喔！</p></div>
+  </section>
+
+  <!-- 小知識 -->
+  <section class="page" id="p-learn">
+    <div class="card"><h2>📚 月經小百科</h2><p class="small muted" style="margin:0">一次讀一點點就好，慢慢了解自己的身體。讀完可以到最下面做小測驗！</p></div>
+    <div id="learn"></div>
+  </section>
+
+  <!-- 我的 -->
+  <section class="page" id="p-me">
+    <div class="card owner-only">
+      <h2>👧 我的資料</h2>
+      <label class="f">名字或暱稱</label><input type="text" id="pfName" maxlength="20">
+      <label class="f">生日</label><input type="date" id="pfBirth">
+      <div class="small muted" id="pfAge" style="margin-top:4px"></div>
+      <label class="f">第一次月經（初經）日期 <span class="small">（選填）</span></label><input type="date" id="pfMen">
+      <div class="row" style="margin-top:12px"><button class="btn pri" onclick="saveProfile()">儲存</button><span class="saved" id="pfSaved"></span></div>
+    </div>
+
+    <div class="card viewer-only" id="vProfile"></div>
+
+    <div class="card" id="growthEdit">
+      <h2>🌱 身高體重記錄</h2>
+      <div class="owner-only">
+        <div class="row" style="flex-wrap:nowrap">
+          <input type="date" id="gDate" style="flex:1.3">
+          <input type="number" id="gCm" placeholder="身高 cm" inputmode="decimal" step="0.1" style="flex:1">
+          <input type="number" id="gKg" placeholder="體重 kg" inputmode="decimal" step="0.1" style="flex:1">
+        </div>
+        <button class="btn" style="margin-top:8px;width:100%" onclick="addGrowth()">＋ 新增記錄</button>
+      </div>
+      <div class="list" id="gList"></div>
+    </div>
+
+    <div class="card owner-only">
+      <h2>🔔 提醒</h2>
+      <label class="f">月經預計來的前幾天提醒我</label>
+      <select id="setRemind" onchange="S.settings.remind=+this.value;save();renderAll()">
+        <option value="1">前 1 天</option><option value="2">前 2 天</option><option value="3">前 3 天</option><option value="5">前 5 天</option>
+      </select>
+      <div class="switch"><span>排卵期也提醒我</span><input type="checkbox" id="setOv" onchange="S.settings.ov=this.checked;save();renderAll()"></div>
+      <div class="row" style="margin-top:6px">
+        <button class="btn" onclick="askNotify()">📲 開啟手機通知</button>
+        <button class="btn" onclick="exportIcs()">📅 加到行事曆</button>
+      </div>
+      <p class="note" id="notifyState"></p>
+      <p class="note">「加到行事曆」會把接下來 6 次預估月經和排卵期放進手機行事曆，時間到行事曆會準時提醒，最可靠。月經週期改變後，可以再加一次。</p>
+    </div>
+
+    <div class="card viewer-only">
+      <h2>🔔 提醒</h2>
+      <div class="row">
+        <button class="btn" onclick="askNotify()">📲 開啟手機通知</button>
+        <button class="btn" onclick="exportIcs()">📅 加到行事曆</button>
+      </div>
+      <p class="note">家人也可以把她的預估月經放進自己的行事曆，提前幫忙準備。</p>
+    </div>
+
+    <div class="card owner-only">
+      <h2>💌 分享給我信任的人</h2>
+      <p class="small muted" style="margin-top:0">只有你給連結的人可以看，而且他們只能看、不能改。你隨時可以停止分享。</p>
+      <div id="shareBox"></div>
+    </div>
+
+    <div class="card viewer-only">
+      <h2>👀 觀看設定</h2>
+      <p class="small muted" id="vInfo"></p>
+      <div class="row"><button class="btn pri" onclick="pullView(true)">🔄 重新整理</button>
+      <button class="btn ghost" onclick="stopViewing()">停止觀看</button></div>
+    </div>
+
+    <div class="card owner-only">
+      <h2>💾 備份</h2>
+      <p class="small muted" style="margin-top:0">資料存在這支手機裡。換手機前，記得先備份。</p>
+      <div class="row">
+        <button class="btn" onclick="exportJson()">⬇️ 下載備份檔</button>
+        <button class="btn" onclick="copyJson()">📋 複製備份文字</button>
+        <button class="btn" onclick="document.getElementById('impFile').click()">⬆️ 從備份還原</button>
+        <input type="file" id="impFile" accept=".json,application/json" class="hide" onchange="importJson(this)">
+      </div>
+      <details style="margin-top:10px"><summary class="small muted">貼上備份文字還原</summary>
+        <textarea id="impText" rows="3" placeholder="把備份文字貼在這裡"></textarea>
+        <button class="btn" style="margin-top:6px" onclick="importText()">還原</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>🎨 外觀</h2>
+      <div class="chips" id="themeChips"></div>
+    </div>
+    <p class="small muted" style="text-align:center">花朵日記只是幫忙記錄和學習的工具，不能取代醫生。<br>身體有任何擔心，記得告訴爸媽或學校護理師。</p>
+  </section>
+</main>
+
+<nav class="tabs" id="tabs"><div class="in">
+  <button data-p="today" class="on"><b>🌸</b>今天</button>
+  <button data-p="cal"><b>📅</b>月曆</button>
+  <button data-p="chart"><b>📊</b>圖表</button>
+  <button data-p="learn"><b>📚</b>小知識</button>
+  <button data-p="me"><b>👧</b>我的</button>
+</div></nav>
+
+<script>
+/* ========= 小工具 ========= */
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const ds=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ds(d)};
+const diff=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
+const todayS=()=>ds(new Date());
+const WD='日一二三四五六';
+const md=s=>{const d=pd(s);return `${d.getMonth()+1}/${d.getDate()}`};
+const mdw=s=>{const d=pd(s);return `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）`};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+const secret=()=>{const a=new Uint8Array(12);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('')};
+
+const FLOW=[{n:'沒有',i:'—'},{n:'一點點',i:'·'},{n:'少',i:'💧'},{n:'中',i:'💧💧'},{n:'多',i:'💧💧💧'}];
+const SYM=['肚子痛','頭痛','腰痠','身體痠痛','胸部脹痛','疲倦想睡','長痘痘','肚子脹','想吐','頭暈','想吃甜食','分泌物變多','冒冷汗','拉肚子'];
+const MOOD=[['😄','開心'],['🙂','還好'],['😐','普通'],['😢','難過'],['😠','煩躁'],['😴','好累']];
+const FACES=['😊','🙂','🙂','🙂','😕','😣','😣','😖','😖','😭','😭'];
+
+/* ========= 儲存 ========= */
+let S=null, VIEW=null;
+const DEF=()=>({v:1,role:'',profile:{name:'',birthday:'',menarche:''},growth:[],days:{},
+  settings:{remind:2,ov:true,theme:'auto'},share:{db:'',id:'',on:false,growth:true,notes:false,last:0},
+  viewer:null,quizBest:0,notified:{}});
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('period-log',1);
+  r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function kvGet(k){try{const db=await idb();return await new Promise(r=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)})}
+  catch(e){try{return JSON.parse(localStorage.getItem('pl_'+k))}catch(_){return null}}}
+async function kvSet(k,v){try{const db=await idb();await new Promise(r=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=r;t.onerror=r})}
+  catch(e){try{localStorage.setItem('pl_'+k,JSON.stringify(v))}catch(_){}}}
+async function load(){
+  const s=await kvGet('state');S=Object.assign(DEF(),s||{});
+  S.settings=Object.assign(DEF().settings,S.settings);S.share=Object.assign(DEF().share,S.share);
+  S.profile=Object.assign(DEF().profile,S.profile);
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+}
+let pushTimer=null;
+async function save(){await kvSet('state',S);if(S.role==='owner'&&S.share.on){clearTimeout(pushTimer);pushTimer=setTimeout(()=>pushShare(false),1500)}}
+const isViewer=()=>S.role==='viewer';
+/* 目前要顯示的資料：自己的，或觀看別人分享的快照 */
+const D=()=>isViewer()?(VIEW||{profile:{},growth:[],days:{},settings:{remind:2,ov:true}}):S;
+
+/* ========= 週期計算 ========= */
+function periods(days){
+  const keys=Object.keys(days).filter(k=>days[k].flow>0).sort();
+  const runs=[];let cur=null;
+  for(const k of keys){if(cur&&diff(cur.end,k)<=2){cur.end=k;cur.list.push(k)}else{cur={end:k,list:[k]};runs.push(cur)}}
+  return runs.filter(r=>r.list.some(k=>days[k].flow>=2)).map(r=>{
+    const start=r.list.find(k=>days[k].flow>=2);return {start,end:r.end,len:diff(start,r.end)+1}});
+}
+function calc(d=D()){
+  const days=d.days||{},T=todayS(),P=periods(days),cyc=[];
+  for(let i=1;i<P.length;i++){const c=diff(P[i-1].start,P[i].start);if(c>=15&&c<=90)cyc.push({start:P[i-1].start,len:c})}
+  const rc=cyc.slice(-6).map(c=>c.len),rp=P.slice(-6).map(p=>p.len);
+  const avgC=rc.length?Math.round(avg(rc)):28, avgP=rp.length?Math.min(8,Math.round(avg(rp))):5;
+  const last=P[P.length-1]||null;
+  let ongoing=false,cycleDay=null,next=null,late=0;
+  if(last){
+    const endedAfter=Object.keys(days).some(k=>k>last.end&&k<=T&&days[k].ended);
+    ongoing=(days[T]&&days[T].flow>0)||(!endedAfter&&!(days[T]&&days[T].flow===0)&&T>=last.start&&(diff(last.start,T)<=avgP+1||diff(last.end,T)<=1));
+    cycleDay=diff(last.start,T)+1;
+    next=addDays(last.start,avgC);
+    if(next<=T&&!ongoing){late=diff(next,T);next=late>0?T:next}
+    if(ongoing)next=addDays(last.start,avgC);
+  }
+  /* 往後 6 個預估週期 */
+  const preds=[];
+  if(last){let s=next;for(let k=0;k<6;k++){const ov=addDays(s,-14);
+      preds.push({start:s,end:addDays(s,avgP-1),ov,ovS:addDays(ov,-2),ovE:addDays(ov,1)});s=addDays(s,avgC)}}
+  return {P,cyc,avgC,avgP,last,ongoing,cycleDay,next,late,preds,T,regular:rc.length>=2&&Math.max(...rc)-Math.min(...rc)<=7};
+}
+function dayInfo(k,c){ /* 月曆某天的狀態 */
+  const days=D().days||{},e=days[k];
+  if(e&&e.flow>=2)return 'per';
+  if(e&&e.flow===1)return 'spot';
+  if(k>c.T||(c.ongoing===false&&k>=c.T)){
+    for(const p of c.preds){
+      if(c.last&&k<=c.last.end)break;
+      if(k>=p.start&&k<=p.end)return 'pred';
+      if(k===p.ov&&k>(c.last?c.last.end:'')) return 'ovd';
+      if(k>=p.ovS&&k<=p.ovE&&k>(c.last?c.last.end:''))return 'ovw';
+    }
+  }
+  return '';
+}
+function ovToday(c){if(!c.last||c.ongoing)return null;const T=c.T;
+  for(const p of c.preds){if(T>=p.ovS&&T<=p.ovE&&T>c.last.end)return p}return null}
+
+/* ========= 分頁 ========= */
+let selDate=todayS(),calYM=null;
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id==='p-'+p));
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
+  window.scrollTo(0,0);if(p==='chart')renderCharts();if(p==='cal')renderCal()}
+
+/* ========= 今天 ========= */
+function ageText(b){if(!b)return '';const n=new Date(),d=pd(b);let y=n.getFullYear()-d.getFullYear(),m=n.getMonth()-d.getMonth();
+  if(n.getDate()<d.getDate())m--;if(m<0){y--;m+=12}return y>=0?`${y} 歲 ${m} 個月`:''}
+function renderHero(){
+  const c=calc(),r=48,C=2*Math.PI*r;let frac=0,big='🌸',sub='',t='',s='';
+  if(!c.last){t='還沒有月經記錄';s=isViewer()?'等她記錄第一次月經後，這裡會出現預估。':'月經來的那天，按下面的「月經來了」，之後就能幫你預估下一次喔！';}
+  else if(c.ongoing){const n=c.cycleDay;big=n;sub='月經第幾天';frac=Math.min(1,n/c.avgP);
+    t=`月經第 ${n} 天`;s=isViewer()?'可以問問她需不需要暖暖包、熱飲，或多休息一下 💗':'好好照顧自己，記得 2–4 小時換一次衛生棉 💗';}
+  else{const to=diff(c.T,c.next);big=c.cycleDay;sub='週期第幾天';frac=Math.min(1,c.cycleDay/c.avgC);
+    const ov=ovToday(c);
+    if(c.late>0){t='月經可能隨時會來';s=`比預估晚了 ${c.late} 天。青春期週期不規律很常見，書包裡記得放衛生棉。`}
+    else if(ov){t='現在可能是排卵期';s='分泌物可能變多、變透明，這是正常的身體變化。'}
+    else{t=`距離下次月經約 ${to} 天`;s=`預計 ${mdw(c.next)} 左右`}}
+  $('#hero').innerHTML=`<div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--accent-soft)" stroke-width="12"/>
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="${c.ongoing?'var(--accent)':'var(--ov)'}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C*frac} ${C}"/></svg>
+    <div class="in"><b>${big}</b><span>${sub}</span></div></div><div><p class="t">${t}</p><p class="s">${s}</p></div>`;
+  $('#periodBtns').innerHTML=c.ongoing
+    ?`<button class="btn big" onclick="periodEnd()">✨ 月經結束了</button>`
+    :`<button class="btn pri big" onclick="periodStart()">🩸 月經來了</button>`;
+}
+function reminders(){
+  const c=calc(),out=[],d=D(),rem=d.settings?.remind||2,who=isViewer()?(d.profile?.name||'她'):'';
+  if(!c.last)return out;
+  if(c.ongoing){if(c.cycleDay>8)out.push({k:'long',cls:'w',ic:'⚠️',t:`這次月經已經 ${c.cycleDay} 天了，超過 7 天${isViewer()?'':'要記得告訴爸媽'}，可能需要問問醫生。`})}
+  else{
+    const to=diff(c.T,c.next);
+    if(c.late===0&&to>=0&&to<=rem)out.push({k:'p'+c.next,cls:'p',ic:'🎒',t:to===0?`${who}月經預計今天來，記得帶衛生棉！`:`${who}月經預計 ${to} 天後（${md(c.next)}）來，書包裡先放好衛生棉吧！`});
+    if(c.late>=10)out.push({k:'late',cls:'w',ic:'💭',t:`比預估晚了 ${c.late} 天。剛開始的幾年常常這樣，不用擔心；如果超過 3 個月沒來，${isViewer()?'可以帶她':'可以請爸媽帶你'}問問醫生。`});
+    if(d.settings?.ov!==false){const ov=ovToday(c);if(ov)out.push({k:'o'+ov.ov,cls:'o',ic:'🌙',t:`${who}現在可能是排卵期（預估），分泌物變多、下腹有點悶都是正常的。`})}
+  }
+  return out;
+}
+function renderBanners(){$('#banners').innerHTML=reminders().map(b=>`<div class="banner ${b.cls}"><span>${b.ic}</span><span>${b.t}</span></div>`).join('')}
+
+function entry(k){return (D().days||{})[k]||{}}
+function setEntry(k,patch){const e=Object.assign({},S.days[k]||{},patch);
+  const empty=!e.flow&&!e.pain&&!(e.sym&&e.sym.length)&&e.mood==null&&!e.note&&!e.sleep&&!e.ended;
+  if(empty)delete S.days[k];else{e.up=Date.now();S.days[k]=e}
+  save();flashSaved();}
+let savedT=null;function flashSaved(){const el=$('#daySaved');if(el){el.textContent='✓ 已自動儲存';clearTimeout(savedT);savedT=setTimeout(()=>el.textContent='',1500)}}
+function shiftDay(n){const x=addDays(selDate,n);if(x>todayS())return;selDate=x;renderDay()}
+function renderDay(){
+  const T=todayS();$('#dayLabel').textContent=(selDate===T?'今天 ':'')+mdw(selDate);
+  $('#dayPick').value=selDate;$('#dayPick').max=T;
+  const e=entry(selDate);
+  if(isViewer()){
+    const parts=[];
+    parts.push(`<dt>經血量</dt><dd>${FLOW[e.flow||0].n}</dd>`);
+    parts.push(`<dt>不舒服</dt><dd>${e.pain!=null?FACES[e.pain]+' '+e.pain+' / 10':'—'}</dd>`);
+    parts.push(`<dt>身體感覺</dt><dd>${(e.sym||[]).join('、')||'—'}</dd>`);
+    parts.push(`<dt>心情</dt><dd>${e.mood!=null?MOOD[e.mood].join(' '):'—'}</dd>`);
+    if(e.sleep)parts.push(`<dt>睡眠</dt><dd>${e.sleep} 小時</dd>`);
+    if(e.note)parts.push(`<dt>日記</dt><dd>${esc(e.note)}</dd>`);
+    $('#dayForm').innerHTML=Object.keys(e).length?`<dl class="sum">${parts.join('')}</dl>`:`<div class="empty">這天沒有記錄</div>`;return;
+  }
+  $('#dayForm').innerHTML=`
+    <label class="f">🩸 經血量</label>
+    <div class="flow">${FLOW.map((f,i)=>`<div class="chip ${(e.flow||0)===i?'on':''}" onclick="setEntry(selDate,{flow:${i},ended:${i?'false':'(entry(selDate).ended||false)'}});renderAll()"><i>${f.i}</i>${f.n}</div>`).join('')}</div>
+    <label class="f">🤕 今天有多不舒服？（0 = 完全不會，10 = 非常痛）</label>
+    <div class="pain"><span class="face" id="pFace">${FACES[e.pain||0]}</span>
+      <input type="range" min="0" max="10" value="${e.pain||0}" oninput="$('#pFace').textContent=FACES[this.value];$('#pNum').textContent=this.value" onchange="setEntry(selDate,{pain:+this.value})">
+      <b id="pNum" style="width:22px;text-align:right">${e.pain||0}</b></div>
+    <label class="f">🧩 身體感覺（可以選很多個）</label>
+    <div class="chips">${SYM.map(s=>`<div class="chip ${(e.sym||[]).includes(s)?'on':''}" onclick="toggleSym('${s}',this)">${s}</div>`).join('')}</div>
+    <label class="f">💭 心情</label>
+    <div class="mood">${MOOD.map((m,i)=>`<div class="chip ${e.mood===i?'on':''}" onclick="setEntry(selDate,{mood:entry(selDate).mood===${i}?null:${i}});renderDay()"><b>${m[0]}</b>${m[1]}</div>`).join('')}</div>
+    <label class="f">😴 昨晚睡了幾小時</label>
+    <input type="number" inputmode="decimal" step="0.5" min="0" max="16" value="${e.sleep||''}" placeholder="例如 8" onchange="setEntry(selDate,{sleep:this.value?+this.value:0})">
+    <label class="f">📝 悄悄話日記 <span class="small">（${S.share.on&&S.share.notes?'會分享給家人看':'只有自己看得到'}）</span></label>
+    <textarea rows="3" placeholder="今天身體有什麼感覺？發生了什麼事？" onchange="setEntry(selDate,{note:this.value.trim()})">${esc(e.note||'')}</textarea>
+    <div class="saved" id="daySaved"></div>`;
+}
+function toggleSym(s,el){const e=entry(selDate),a=new Set(e.sym||[]);a.has(s)?a.delete(s):a.add(s);setEntry(selDate,{sym:[...a]});el.classList.toggle('on')}
+function periodStart(){const T=todayS();selDate=T;const e=S.days[T]||{};setEntry(T,{flow:e.flow>=2?e.flow:3,ended:false});renderAll();
+  toast('記下來了！記得 2–4 小時換一次衛生棉 💗')}
+function periodEnd(){const c=calc(S),T=todayS();
+  if(c.last){for(let k=addDays(c.last.end,1);k<T;k=addDays(k,1)){if(!(S.days[k]&&S.days[k].flow))setEntry(k,{flow:2})}}
+  setEntry(T,{flow:0,ended:true});renderAll();toast('辛苦了！這次月經記錄完成 🌸')}
+function toast(t){const el=document.createElement('div');el.textContent=t;
+  el.style.cssText='position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:20;max-width:90%;text-align:center';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2600)}
+
+/* ========= 每日小知識 ========= */
+const TIPS=['月經的英文是 period，正式說法是 menstruation。','衛生棉大約 2–4 小時換一次，就算量很少也要換喔。','經痛時可以用暖暖包或熱水袋熱敷肚子。','月經期間一樣可以洗澡，用淋浴比較好。',
+ '月經期間可以運動，散步、伸展都能讓肚子比較舒服。','多吃深綠色蔬菜、豆類、瘦肉，可以補充鐵質。','剛開始來月經的前幾年，週期不規律是很正常的。','睡前換上夜用型衛生棉，就不用擔心半夜外漏。',
+ '如果不小心弄髒褲子，用冷水先沖，比熱水更容易洗乾淨。','書包裡隨時放 1–2 片衛生棉和一件備用內褲，安心很多。','“I’m on my period.” 意思是「我月經來了」。','記錄身體的感覺，可以幫你找到自己的規律。'];
+function renderTip(){const i=Math.floor(Date.now()/864e5)%TIPS.length;
+  $('#tipCard').innerHTML=`<h2>💡 今日小知識</h2><p style="margin:0">${TIPS[i]}</p><button class="btn ghost" style="margin-top:10px" onclick="go('learn')">看更多 →</button>`}
+
+/* ========= 月曆 ========= */
+function calMove(n){calYM.setMonth(calYM.getMonth()+n);renderCal()}
+function renderCal(){
+  if(!calYM){const n=new Date();calYM=new Date(n.getFullYear(),n.getMonth(),1)}
+  const c=calc(),y=calYM.getFullYear(),m=calYM.getMonth(),T=c.T,days=D().days||{};
+  $('#calTitle').textContent=`${y} 年 ${m+1} 月`;
+  const first=new Date(y,m,1),start=new Date(y,m,1-first.getDay());let h=[...WD].map(w=>`<div class="wd">${w}</div>`).join('');
+  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=ds(d);if(i>=35&&d.getMonth()!==m)break;
+    const cls=['cd',dayInfo(k,c),d.getMonth()!==m?'out':'',k===T?'today':''].join(' ');
+    const e=days[k],has=e&&(e.pain||(e.sym&&e.sym.length)||e.mood!=null||e.note);
+    h+=`<div class="${cls}" onclick="pickDay('${k}')">${d.getDate()}${has?'<span class="dot"></span>':''}</div>`}
+  $('#calGrid').innerHTML=h;
+  $('#perCount').textContent=c.P.length?`共 ${c.P.length} 次`:'';
+  $('#perList').innerHTML=c.P.length?c.P.slice().reverse().map((p,i,a)=>{const nx=c.P[c.P.length-i];
+    const cl=nx?diff(p.start,nx.start):null;
+    return `<div class="it"><span style="font-size:18px">🩸</span><div><b>${mdw(p.start)}</b><div class="small muted">來了 ${p.len} 天${cl?`・週期 ${cl} 天`:'・這一次'}</div></div></div>`}).join('')
+    :'<div class="empty">還沒有月經記錄</div>';
+}
+function pickDay(k){if(k>todayS()){toast('還沒到的日子不能記錄喔');return}selDate=k;go('today');renderDay()}
+
+/* ========= 圖表（純 SVG，不需要網路） ========= */
+const W=340;
+function barChart(items,{h=170,band=null,unit='天',color='var(--accent)',maxY=null}={}){
+  if(!items.length)return '';
+  const pl=26,pr=6,pt=16,pb=24,H=h,raw=maxY||Math.max(1,...items.map(i=>i.v),band?band[1]:0)*1.12;
+  const stp=[1,2,5,10,20,25,50,100].find(x=>x*4>=raw)||Math.ceil(raw/4),max=stp*4;
+  const y=v=>pt+(H-pt-pb)*(1-v/max),bw=(W-pl-pr)/items.length,w=Math.min(bw*.62,30);
+  let g='';const ticks=4;
+  for(let i=0;i<=ticks;i++){const v=stp*i;g+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text x="${pl-4}" y="${y(v)+3}" text-anchor="end">${v}</text>`}
+  if(band)g+=`<rect x="${pl}" width="${W-pl-pr}" y="${y(band[1])}" height="${y(band[0])-y(band[1])}" fill="var(--accent-soft)" opacity=".55"/>`;
+  const step=Math.ceil(items.length/8);
+  items.forEach((it,i)=>{const x=pl+bw*i+bw/2;
+    g+=`<rect x="${x-w/2}" y="${y(it.v)}" width="${w}" height="${Math.max(0,y(0)-y(it.v))}" rx="4" fill="${it.c||color}"><title>${it.l}：${it.v} ${unit}</title></rect>`;
+    if(items.length<=12)g+=`<text x="${x}" y="${y(it.v)-4}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${it.v}</text>`;
+    if(i%step===0)g+=`<text x="${x}" y="${H-8}" text-anchor="middle">${it.l}</text>`});
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+}
+const EMPTY=t=>`<div class="empty">${t}</div>`;
+function renderCharts(){
+  const c=calc(),d=D(),days=d.days||{},T=c.T;
+  /* 摘要 */
+  const s90=symCount(days,T,c);const topSym=s90[0];
+  $('#tiles').innerHTML=[
+    ['平均週期',c.cyc.length?c.avgC:'—','天'],['平均月經天數',c.P.length?c.avgP:'—','天'],
+    ['已記錄月經',c.P.length,'次'],['最常見的不舒服',topSym?topSym.s:'—','']
+  ].map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v" style="${String(t[1]).length>3?'font-size:18px':''}">${t[1]}<small>${t[2]}</small></div></div>`).join('');
+  $('#chCycle').innerHTML=c.cyc.length?barChart(c.cyc.slice(-12).map(x=>({l:md(x.start),v:x.len,c:(x.len<21||x.len>45)?'var(--warn)':'var(--accent)'})),{band:[21,45]})
+    :EMPTY('記錄兩次以上的月經，就能看到週期長度囉');
+  $('#chLen').innerHTML=c.P.length?barChart(c.P.slice(-12).map(p=>({l:md(p.start),v:p.len,c:p.len>7?'var(--warn)':'var(--accent)'})),{band:[2,7],maxY:Math.max(9,...c.P.map(p=>p.len+1))})
+    :EMPTY('還沒有月經記錄');
+  $('#chPain').innerHTML=painTimeline(days,T);
+  $('#chPainDay').innerHTML=painByDay(days,c);
+  $('#chSym').innerHTML=s90.length?symBars(s90.slice(0,8)):EMPTY('在「今天」記錄身體感覺，這裡就會出現統計');
+  $('#chMood').innerHTML=moodBars(days,T);
+  $('#chGrowth').innerHTML=growthChart(d.growth||[]);
+  $('#growthCard').classList.toggle('hide',isViewer()&&!(d.growth&&d.growth.length));
+}
+function painTimeline(days,T){
+  const N=60,H=170,pl=26,pr=6,pt=12,pb=24,x=i=>pl+(W-pl-pr)*i/(N-1),y=v=>pt+(H-pt-pb)*(1-v/10);
+  let g='',pts=[];
+  for(const v of [0,5,10])g+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text x="${pl-4}" y="${y(v)+3}" text-anchor="end">${v}</text>`;
+  for(let i=0;i<N;i++){const k=addDays(T,i-N+1),e=days[k];
+    if(e&&e.flow>=1)g+=`<rect x="${x(i)-(W-pl-pr)/(N-1)/2}" y="${pt}" width="${(W-pl-pr)/(N-1)}" height="${H-pt-pb}" fill="var(--accent-soft)" opacity="${e.flow>=2?1:.5}"/>`;
+    if(e&&e.pain!=null&&(e.pain>0||e.sym||e.mood!=null))pts.push([x(i),y(e.pain||0),k,e.pain||0]);
+    if(i%10===0||i===N-1)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">${md(k)}</text>`}
+  if(!pts.length&&!g.includes('rect'))return EMPTY('記錄每天的不舒服程度，就能看到變化曲線');
+  if(pts.length>1)g+=`<polyline points="${pts.map(p=>p[0]+','+p[1]).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  g+=pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2"><title>${md(p[2])}：${p[3]}</title></circle>`).join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+}
+function painByDay(days,c){
+  const acc={};for(const p of c.P){for(let i=-3;i<8;i++){const k=addDays(p.start,i),e=days[k];if(e&&e.pain!=null){(acc[i]=acc[i]||[]).push(e.pain)}}}
+  const keys=Object.keys(acc).map(Number).sort((a,b)=>a-b);if(!keys.length)return EMPTY('月經期間記錄不舒服程度，就能知道第幾天最需要休息');
+  const items=[];for(let i=Math.min(...keys);i<=Math.max(...keys);i++){items.push({l:i<0?`前${-i}天`:`第${i+1}天`,v:acc[i]?Math.round(avg(acc[i])*10)/10:0,c:i<0?'var(--ov)':'var(--accent)'})}
+  return barChart(items,{maxY:10,unit:'分'})+'<p class="note">紫色是月經來之前的幾天，粉紅色是月經期間。數字是平均不舒服程度（0–10）。</p>';
+}
+function inPeriod(k,c){return c.P.some(p=>k>=p.start&&k<=p.end)}
+function symCount(days,T,c){const m={};
+  for(const k in days){if(diff(k,T)>90||k>T)continue;const e=days[k];for(const s of e.sym||[]){m[s]=m[s]||{s,a:0,b:0};inPeriod(k,c)?m[s].a++:m[s].b++}}
+  return Object.values(m).sort((x,y)=>(y.a+y.b)-(x.a+x.b))}
+function symBars(list){const rh=26,pl=78,pr=26,H=list.length*rh+6,max=Math.max(...list.map(s=>s.a+s.b));
+  const x=v=>(W-pl-pr)*v/max;let g='';
+  list.forEach((s,i)=>{const y=i*rh+4;g+=`<text x="${pl-6}" y="${y+14}" text-anchor="end" style="fill:var(--ink);font-size:11px">${s.s}</text>
+    <rect x="${pl}" y="${y+3}" width="${x(s.a)}" height="15" rx="3" fill="var(--accent)"/><rect x="${pl+x(s.a)}" y="${y+3}" width="${x(s.b)}" height="15" rx="3" fill="var(--pred)"/>
+    <text x="${pl+x(s.a+s.b)+4}" y="${y+14}">${s.a+s.b}</text>`});
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}</svg>`}
+function moodBars(days,T){const cnt=MOOD.map(()=>0);let n=0;for(const k in days){if(diff(k,T)>90||k>T)continue;const m=days[k].mood;if(m!=null){cnt[m]++;n++}}
+  if(!n)return EMPTY('記錄每天的心情，就能看到心情變化');
+  return barChart(MOOD.map((m,i)=>({l:m[0]+m[1],v:cnt[i],c:i<3?'var(--teal)':'var(--ov)'})),{unit:'天'})}
+function growthChart(g){
+  const kg=g.filter(x=>x.kg).sort((a,b)=>a.date<b.date?-1:1),cm=g.filter(x=>x.cm).sort((a,b)=>a.date<b.date?-1:1);
+  if(!kg.length&&!cm.length)return EMPTY('到「我的」新增身高體重，就能看到成長曲線');
+  return [cm.length?lineChart(cm.map(x=>[x.date,x.cm]),'身高（公分）','var(--teal)'):'',kg.length?lineChart(kg.map(x=>[x.date,x.kg]),'體重（公斤）','var(--ov)'):''].join('');
+}
+function lineChart(pts,title,color){
+  const H=160,pl=34,pr=14,pt=34,pb=22,t0=pd(pts[0][0]).getTime(),t1=Math.max(pd(pts[pts.length-1][0]).getTime(),t0+864e5);
+  let lo=Math.min(...pts.map(p=>p[1])),hi=Math.max(...pts.map(p=>p[1]));const padv=Math.max(1,(hi-lo)*.25);lo=Math.floor(lo-padv);hi=Math.ceil(hi+padv);
+  const x=d=>pts.length===1?(pl+W-pr)/2:pl+(W-pl-pr)*(pd(d).getTime()-t0)/(t1-t0),y=v=>pt+(H-pt-pb)*(1-(v-lo)/(hi-lo));
+  let g=`<text x="0" y="12" style="fill:var(--ink);font-weight:700;font-size:12px">${title}</text>`;
+  for(const v of [lo,(lo+hi)/2,hi])g+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text x="${pl-4}" y="${y(v)+3}" text-anchor="end">${Math.round(v)}</text>`;
+  g+=`<polyline points="${pts.map(p=>x(p[0])+','+y(p[1])).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  pts.forEach((p,i)=>{g+=`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="4" fill="var(--card)" stroke="${color}" stroke-width="2"/>`;
+    if(i===0||i===pts.length-1)g+=`<text x="${x(p[0])}" y="${H-6}" text-anchor="${pts.length===1?'middle':i?'end':'start'}">${p[0].slice(2).replace(/-/g,'/')}</text><text x="${x(p[0])}" y="${y(p[1])-8}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${p[1]}</text>`});
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" style="margin-bottom:8px">${g}</svg>`}
+
+/* ========= 我的 ========= */
+function renderMe(){
+  const p=S.profile;$('#pfName').value=p.name||'';$('#pfBirth').value=p.birthday||'';$('#pfMen').value=p.menarche||'';
+  $('#pfAge').textContent=p.birthday?'今年 '+ageText(p.birthday):'';
+  $('#setRemind').value=S.settings.remind;$('#setOv').checked=S.settings.ov!==false;
+  $('#gDate').value=$('#gDate').value||todayS();
+  const g=(D().growth||[]).slice().sort((a,b)=>a.date<b.date?1:-1);
+  $('#gList').innerHTML=g.length?g.map(x=>`<div class="it"><span>${x.date.replace(/-/g,'/')}</span><span>${x.cm?x.cm+' 公分':''}</span><span>${x.kg?x.kg+' 公斤':''}</span>${isViewer()?'':`<button class="x" onclick="delGrowth('${x.id}')" aria-label="刪除">×</button>`}</div>`).join('')
+    :'<div class="empty">還沒有記錄</div>';
+  if(isViewer()){const vp=D().profile||{};
+    $('#vProfile').innerHTML=`<h2>👧 ${esc(vp.name||'她')} 的資料</h2><dl class="sum"><dt>年齡</dt><dd>${ageText(vp.birthday)||'—'}</dd><dt>生日</dt><dd>${vp.birthday?vp.birthday.replace(/-/g,'/'):'—'}</dd><dt>初經</dt><dd>${vp.menarche?vp.menarche.replace(/-/g,'/'):'—'}</dd></dl>`;
+    $('#vInfo').textContent=VIEW?`最後更新：${VIEW.updated?new Date(VIEW.updated).toLocaleString('zh-TW'):'—'}。你只能觀看，不能修改她的記錄。`:'讀取中…';}
+  renderShare();renderTheme();
+  $('#notifyState').textContent=!('Notification' in window)?'這個瀏覽器不支援通知。iPhone 需先「加入主畫面」再從主畫面打開才能開通知。':
+    Notification.permission==='granted'?'✅ 通知已開啟（打開 App 時會跳出提醒）':Notification.permission==='denied'?'通知被關掉了，可以到手機設定裡打開。':'';
+}
+function saveProfile(){S.profile={name:$('#pfName').value.trim(),birthday:$('#pfBirth').value,menarche:$('#pfMen').value};save();renderAll();$('#pfSaved').textContent='✓ 已儲存'}
+function addGrowth(){const date=$('#gDate').value||todayS(),cm=+$('#gCm').value||0,kg=+$('#gKg').value||0;if(!cm&&!kg){toast('請輸入身高或體重');return}
+  S.growth.push({id:uid(),date,cm,kg});$('#gCm').value='';$('#gKg').value='';save();renderAll();toast('記下來了 🌱')}
+function delGrowth(id){if(!confirm('刪除這筆記錄？'))return;S.growth=S.growth.filter(x=>x.id!==id);save();renderAll()}
+function renderTheme(){const t=S.settings.theme||'auto';
+  $('#themeChips').innerHTML=[['auto','跟著手機'],['light','淺色'],['dark','深色']].map(([k,n])=>`<div class="chip ${t===k?'on':''}" onclick="S.settings.theme='${k}';save();applyTheme();renderTheme()">${n}</div>`).join('')}
+function applyTheme(){const t=S.settings.theme;if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme}
+
+/* ========= 分享（Firebase，只給有連結的人看） ========= */
+const fbBase=db=>db.trim().replace(/\/+$/,'');
+function shareSnapshot(){const d={profile:S.profile,settings:{remind:S.settings.remind,ov:S.settings.ov},updated:Date.now(),days:{}};
+  for(const k in S.days){const e=Object.assign({},S.days[k]);if(!S.share.notes)delete e.note;d.days[k]=e}
+  d.growth=S.share.growth?S.growth:[];return d}
+async function pushShare(alertIt){
+  if(!S.share.on||!S.share.db||!S.share.id)return false;
+  try{const r=await fetch(`${fbBase(S.share.db)}/period_share/${S.share.id}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(shareSnapshot())});
+    if(!r.ok)throw new Error('HTTP '+r.status+'，請確認同步金鑰是否正確');
+    S.share.last=Date.now();await kvSet('state',S);if(alertIt)alert('已更新分享內容！');renderShare();return true}
+  catch(e){if(alertIt)alert('上傳失敗：'+(e.message||'請檢查網路'));return false}}
+function shareLink(){const o={db:fbBase(S.share.db),id:S.share.id,n:S.profile.name||''};
+  const b=btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return location.origin+location.pathname+'#view='+b}
+function renderShare(){
+  const sh=S.share;let h='';
+  h+=`<label class="f">家人同步金鑰（Firebase 網址）</label><input type="url" id="shDb" value="${esc(sh.db)}" placeholder="https://…firebasedatabase.app" ${sh.on?'disabled':''}>`;
+  h+=`<div class="switch"><span>分享身高體重</span><input type="checkbox" ${sh.growth?'checked':''} onchange="S.share.growth=this.checked;save()"></div>`;
+  h+=`<div class="switch"><span>分享悄悄話日記</span><input type="checkbox" ${sh.notes?'checked':''} onchange="S.share.notes=this.checked;save();renderDay()"></div>`;
+  if(!sh.on)h+=`<button class="btn pri" style="width:100%;margin-top:8px" onclick="startShare()">開始分享</button>`;
+  else{h+=`<p class="small" style="margin:10px 0 0">✅ 分享中，把這個連結傳給你信任的人：</p><div class="codebox">${esc(shareLink())}</div>
+    <div class="row"><button class="btn pri" onclick="copyText(shareLink(),'連結已複製')">📋 複製連結</button>${navigator.share?`<button class="btn" onclick="navigator.share({title:'花朵日記',url:shareLink()}).catch(()=>{})">📤 傳送</button>`:''}
+    <button class="btn" onclick="pushShare(true)">🔄 立即更新</button></div>
+    <p class="note">最後上傳：${sh.last?new Date(sh.last).toLocaleString('zh-TW'):'—'}。你每次記錄後會自動更新。</p>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" onclick="revokeShare(true)">🔁 換一個新連結</button><button class="btn ghost" onclick="revokeShare(false)">⛔ 停止分享</button></div>
+    <p class="note">「換新連結」：舊連結會失效，只有拿到新連結的人才能看。</p>`}
+  $('#shareBox').innerHTML=h}
+async function startShare(){const db=$('#shDb').value.trim();
+  if(!/^https:\/\/[^\s]+firebase(io\.com|database\.app)/.test(db)){alert('請貼上正確的同步金鑰網址（https://… firebasedatabase.app）');return}
+  S.share.db=db;S.share.id=S.share.id||secret();S.share.on=true;await save();
+  if(await pushShare(false)){renderShare();toast('分享已開始！')}else{S.share.on=false;await save();renderShare();alert('連不上雲端，請檢查金鑰或網路')}}
+async function revokeShare(renew){if(!confirm(renew?'舊連結會失效，要換新連結嗎？':'停止後，家人就看不到你的日記了。確定嗎？'))return;
+  try{await fetch(`${fbBase(S.share.db)}/period_share/${S.share.id}.json`,{method:'DELETE'})}catch(e){}
+  S.share.id=secret();S.share.on=renew;await save();if(renew)await pushShare(false);renderShare();toast(renew?'已換成新連結':'已停止分享')}
+function copyText(t,msg){const done=()=>toast(msg||'已複製');
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(done,fb);else fb();
+  function fb(){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){prompt('請手動複製：',t)}ta.remove()}}
+
+/* 觀看模式 */
+function parseViewHash(){const m=location.hash.match(/view=([\w-]+)/);if(!m)return null;
+  try{const b=m[1].replace(/-/g,'+').replace(/_/g,'/');const s=new TextDecoder().decode(Uint8Array.from(atob(b+'==='.slice((b.length+3)%4)),c=>c.charCodeAt(0)));return JSON.parse(s)}catch(e){return null}}
+async function pullView(alertIt){
+  if(!S.viewer)return;
+  try{const r=await fetch(`${fbBase(S.viewer.db)}/period_share/${S.viewer.id}.json`,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
+    const j=await r.json();if(!j){VIEW=null;$('#viewbar').textContent='⛔ 這個分享已經停止，或連結換新了。請向她要新的連結。';renderAll();return}
+    VIEW=Object.assign({profile:{},growth:[],days:{},settings:{}},j);await kvSet('viewCache',VIEW);
+    if(alertIt)toast('已更新');}
+  catch(e){if(alertIt)alert('讀取失敗：'+(e.message||'請檢查網路'))}
+  renderAll();}
+function startViewerPrompt(){const t=prompt('請貼上她傳給你的分享連結：');if(!t)return;const m=t.match(/#view=([\w-]+)/);
+  if(!m){alert('連結格式不對，請確認是完整的分享連結');return}location.hash='view='+m[1];enterViewFromHash()}
+async function enterViewFromHash(){const v=parseViewHash();if(!v)return false;
+  if(S.role==='owner'&&Object.keys(S.days).length&&!confirm('這支手機已經有你自己的日記。要切換成「觀看家人」模式嗎？（你的日記不會被刪除）'))return false;
+  S.role='viewer';S.viewer={db:v.db,id:v.id,n:v.n};await save();history.replaceState(null,'',location.pathname);boot();return true}
+async function stopViewing(){if(!confirm('停止觀看？之後需要她重新給你連結才能再看。'))return;S.viewer=null;S.role=Object.keys(S.days).length?'owner':'';VIEW=null;await save();boot()}
+function startOwner(){S.role='owner';save();boot()}
+
+/* ========= 通知 / 行事曆 ========= */
+async function askNotify(){if(!('Notification' in window)){alert('這個瀏覽器不支援通知。iPhone 請先用 Safari「分享 → 加入主畫面」，再從主畫面打開 App。也可以改用「加到行事曆」。');return}
+  const p=await Notification.requestPermission();renderMe();if(p==='granted'){notify('🌸 通知開啟了','之後月經快來、排卵期的時候會提醒你');}}
+async function notify(title,body){try{const r=await navigator.serviceWorker?.ready;if(r)r.showNotification(title,{body,icon:'icon-180.png',badge:'icon-180.png'});else new Notification(title,{body})}catch(e){try{new Notification(title,{body})}catch(_){}}}
+async function checkNotify(){if(!('Notification' in window)||Notification.permission!=='granted')return;
+  for(const b of reminders()){const key=b.k+'@'+todayS();if(S.notified[key])continue;S.notified[key]=1;
+    notify(b.cls==='o'?'🌙 排卵期提醒':b.cls==='p'?'🎒 月經快來了':'🌸 花朵日記',b.t)}
+  for(const k in S.notified)if(!k.endsWith(todayS()))delete S.notified[k];await kvSet('state',S)}
+function exportIcs(){const c=calc(),d=D();if(!c.last){alert('記錄過月經後才能預估喔');return}
+  const rem=d.settings?.remind||2,nm=isViewer()?(d.profile?.name||'她')+'的':'',f=s=>s.replace(/-/g,''),now=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const ev=[];c.preds.forEach((p,i)=>{
+    ev.push(['BEGIN:VEVENT',`UID:p-${p.start}-${i}@period-log`,`DTSTAMP:${now}`,`DTSTART;VALUE=DATE:${f(p.start)}`,`DTEND;VALUE=DATE:${f(addDays(p.end,1))}`,
+      `SUMMARY:🩸 ${nm}月經預計來（預估）`,'DESCRIPTION:記得在書包放衛生棉和備用內褲 💗',
+      'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:月經快來了，準備好衛生棉',`TRIGGER:-P${rem-1}DT15H`,'END:VALARM','END:VEVENT'].join('\r\n'));
+    if(d.settings?.ov!==false)ev.push(['BEGIN:VEVENT',`UID:o-${p.ov}-${i}@period-log`,`DTSTAMP:${now}`,`DTSTART;VALUE=DATE:${f(p.ovS)}`,`DTEND;VALUE=DATE:${f(addDays(p.ovE,1))}`,
+      `SUMMARY:🌙 ${nm}排卵期（預估）`,'DESCRIPTION:分泌物可能變多，是正常的身體變化',
+      'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:排卵期（預估）','TRIGGER:PT9H','END:VALARM','END:VEVENT'].join('\r\n'))});
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//period-log//zh-TW','CALSCALE:GREGORIAN',...ev,'END:VCALENDAR'].join('\r\n');
+  download(new Blob([ics],{type:'text/calendar'}),'花朵日記提醒.ics');
+  toast('打開下載的檔案，就能加入行事曆')}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+
+/* ========= 備份 ========= */
+const backupData=()=>JSON.stringify({app:'period-log',v:1,profile:S.profile,growth:S.growth,days:S.days,settings:S.settings,quizBest:S.quizBest});
+function exportJson(){download(new Blob([backupData()],{type:'application/json'}),`花朵日記備份_${todayS()}.json`)}
+function copyJson(){copyText(backupData(),'備份文字已複製，可以貼到備忘錄保存')}
+function restore(txt){try{const j=JSON.parse(txt);if(j.app!=='period-log')throw 0;if(!confirm('用備份覆蓋目前的資料？'))return;
+  Object.assign(S,{profile:j.profile||S.profile,growth:j.growth||[],days:j.days||{},quizBest:j.quizBest||0});S.settings=Object.assign(S.settings,j.settings||{});
+  S.role='owner';save();boot();toast('還原完成！')}catch(e){alert('這不是花朵日記的備份檔')}}
+function importJson(inp){const f=inp.files[0];if(!f)return;f.text().then(restore);inp.value=''}
+function importText(){restore($('#impText').value)}
+
+/* ========= 小知識內容 ========= */
+const padSvg=`<svg class="ill" viewBox="0 0 300 120" aria-label="衛生棉構造圖">
+ <rect x="40" y="35" width="220" height="50" rx="25" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+ <path d="M120 35 L105 12 L195 12 L180 35 Z M120 85 L105 108 L195 108 L180 85 Z" fill="var(--ov-soft)" stroke="var(--ov)" stroke-width="2"/>
+ <rect x="75" y="48" width="150" height="24" rx="12" fill="var(--card)" stroke="var(--accent)" stroke-dasharray="4 3"/>
+ <text x="150" y="64" text-anchor="middle">吸收層（貼身這面）</text>
+ <text x="150" y="9" text-anchor="middle" style="fill:var(--ov)">護翼（往內褲外面折）</text>
+ <text x="12" y="64">前</text><text x="275" y="64">後</text></svg>`;
+const stepSvg=`<svg class="ill" viewBox="0 0 300 90" aria-label="衛生棉貼法">
+ <path d="M30 15 h80 l-10 60 h-60 z" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="2"/>
+ <rect x="52" y="22" width="36" height="46" rx="14" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+ <text x="70" y="86" text-anchor="middle">貼在內褲中間</text>
+ <path d="M190 15 h80 l-10 60 h-60 z" fill="var(--teal-soft)" stroke="var(--teal)" stroke-width="2"/>
+ <rect x="212" y="22" width="36" height="46" rx="14" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+ <path d="M212 40 h-20 M248 40 h20" stroke="var(--ov)" stroke-width="6" stroke-linecap="round"/>
+ <text x="230" y="86" text-anchor="middle">護翼往外折包住</text>
+ <text x="150" y="48" text-anchor="middle" style="font-size:20px">→</text></svg>`;
+const cycleSvg=`<svg class="ill" viewBox="0 0 300 70" aria-label="月經週期示意">
+ <rect x="10" y="20" width="280" height="22" rx="11" fill="var(--line)"/>
+ <rect x="10" y="20" width="50" height="22" rx="11" fill="var(--accent)"/>
+ <rect x="140" y="20" width="40" height="22" fill="var(--ov-soft)"/><circle cx="165" cy="31" r="8" fill="var(--ov)"/>
+ <text x="35" y="14" text-anchor="middle">月經 2–7 天</text><text x="165" y="14" text-anchor="middle">排卵（大約下次月經前 14 天）</text>
+ <text x="10" y="60">第 1 天</text><text x="290" y="60" text-anchor="end">下次月經（約 21–45 天後）</text></svg>`;
+const VOCAB=[['period','月經（最常用的說法）'],['menstruation','月經（正式說法）'],['menstrual cycle','月經週期'],['pad / sanitary pad','衛生棉'],['panty liner','護墊'],
+ ['tampon','棉條'],['menstrual cup','月亮杯'],['cramps','經痛'],['PMS','經前症候群'],['ovulation','排卵'],['discharge','分泌物（白帶）'],['puberty','青春期'],
+ ["I'm on my period.",'我月經來了。'],['May I go to the restroom, please?','我可以去洗手間嗎？'],['May I go to the nurse’s office?','我可以去保健室嗎？'],['I have cramps.','我肚子（經痛）痛。']];
+const LEARN=[
+ {ic:'🌸',t:'月經是什麼？',h:`<p>女生長大進入<b>青春期</b>後，子宮每個月會把內膜準備得厚厚軟軟的。如果沒有用到，內膜就會剝落，和一點點血一起從陰道流出來，這就是<b>月經</b>。</p>
+  <p>月經代表身體正在健康地長大，一點都不髒、也不丟臉 💗。</p>${cycleSvg}
+  <ul><li>第一次月經叫做<b>初經</b>，大多在 10–15 歲之間來。</li><li>每次月經大約持續 <b>2–7 天</b>。</li><li>從這次月經第一天，到下次月經第一天，叫做一個<b>週期</b>，青少年大約 <b>21–45 天</b>。</li>
+  <li>剛開始的 2–3 年，週期常常忽長忽短，甚至跳過一個月，這是正常的。</li><li>一次月經流出的血，其實只有大約 2–5 湯匙，看起來多是因為被衛生棉吸開了。</li></ul>`},
+ {ic:'🔤',t:'月經英文小教室',h:`<p>點 🔊 可以聽發音。在學校或國外，用得到這些句子喔！</p><div class="vocab">${VOCAB.map(([e,z])=>`<div class="w"><div><b>${e}</b><div class="zh">${z}</div></div><button onclick="say('${e.replace(/'/g,"\\'")}')" aria-label="播放發音">🔊</button></div>`).join('')}</div>`},
+ {ic:'🩹',t:'衛生棉有哪些種類？',h:`${padSvg}<table class="tbl"><tr><th>種類</th><th>大約長度</th><th>什麼時候用</th></tr>
+  <tr><td>護墊</td><td>15 cm 左右</td><td>月經快來、最後一兩天量很少，或分泌物多的時候</td></tr>
+  <tr><td>日用型</td><td>20–25 cm</td><td>白天、量普通的時候，最常用</td></tr>
+  <tr><td>日用加長／量多型</td><td>25–30 cm</td><td>月經第 1–3 天量比較多的時候</td></tr>
+  <tr><td>夜用型</td><td>30–42 cm</td><td>睡覺時用，後面比較長、比較寬，躺著也不容易漏</td></tr>
+  <tr><td>安心褲（褲型）</td><td>像內褲一樣穿</td><td>量很多的晚上，或擔心翻身外漏時</td></tr></table>
+  <p><b>有翅膀（護翼）還是沒有？</b>有護翼的比較不會移位、不容易側漏，剛開始建議選有護翼的。</p>
+  <p><b>其他月經用品</b>：還有布衛生棉（可以洗了重複用）、棉條、月亮杯。棉條和月亮杯要放進身體裡使用，等長大一點、想嘗試時，先和媽媽或醫生討論怎麼用比較好。</p>`},
+ {ic:'📋',t:'衛生棉怎麼用？',h:`${stepSvg}<ol class="steps"><li>先<b>洗手</b>，再拆開衛生棉的包裝。</li><li>撕掉背面的<b>離型紙</b>（背膠上的那張紙）。</li><li>把衛生棉<b>貼在內褲正中間</b>，比較寬的那一端朝後面。</li>
+  <li>有護翼的話，把護翼<b>往內褲外側折</b>，包住內褲黏好。</li><li>穿好內褲，確認衛生棉有服貼、沒有歪掉。</li>
+  <li>換下來時，把用過的衛生棉<b>捲起來</b>，用新衛生棉的包裝紙或衛生紙<b>包好</b>，丟進垃圾桶。<b>不要丟馬桶</b>，會塞住！</li><li>最後再<b>洗一次手</b>。</li></ol>`},
+ {ic:'⏰',t:'多久要換一次？',h:`<ul><li>白天大約 <b>2–4 小時</b>換一次，就算看起來不多也要換，保持乾爽可以避免異味和皮膚發癢。</li><li>量多的時候換勤一點；如果<b>每 1–2 小時就整片濕透</b>，要告訴大人。</li>
+  <li>下課時間就可以去換，不用等到很滿。</li><li>睡前換上<b>夜用型</b>，早上起床再換新的。</li></ul>`},
+ {ic:'🎒',t:'經期小包包準備清單',h:`<p>做一個小小的「經期包」放在書包裡，就不怕月經突然來：</p><ul class="check">
+  <li>☑️ 日用衛生棉 2–3 片</li><li>☑️ 護墊 1–2 片</li><li>☑️ 一件乾淨的備用內褲（裝在夾鏈袋裡）</li><li>☑️ 濕紙巾或衛生紙</li><li>☑️ 一個小塑膠袋（裝弄髒的衣物）</li><li>☑️ 暖暖包（冬天經痛時好用）</li></ul>
+  <p>如果在學校突然來了又沒帶，可以到<b>保健室</b>找護理師阿姨，她們都有準備，也很樂意幫忙。</p>`},
+ {ic:'💡',t:'月經期間要注意什麼？',h:`<ul><li>🛁 <b>可以洗澡、洗頭</b>！用淋浴比較好，下面用清水輕輕洗就好，不需要用特別的清潔劑。</li>
+  <li>🍲 <b>均衡飲食</b>：多吃深綠色蔬菜、豆類、蛋、瘦肉、魚，補充鐵質；少喝含咖啡因的飲料。</li><li>💧 <b>多喝溫水</b>，可以減少肚子脹。</li>
+  <li>🧣 <b>注意保暖</b>，尤其是肚子和腰。冰的東西如果吃了會不舒服，就先少吃。</li><li>🚶‍♀️ <b>可以運動</b>：散步、伸展、瑜伽都很好；不舒服時就休息，不用勉強。</li>
+  <li>😴 <b>早點睡</b>，睡飽了經痛和心情都會好一些。</li><li>📝 <b>記錄下來</b>：每天在花朵日記記一下，慢慢就能了解自己的規律。</li></ul>`},
+ {ic:'😣',t:'經痛怎麼辦？',h:`<p>月經時肚子悶悶痛、腰痠，是因為子宮在收縮，把內膜推出來。很多女生都會有，通常第 1–2 天最明顯。</p>
+  <ul><li>🔥 用<b>熱水袋或暖暖包</b>熱敷下腹部（隔著衣服，小心燙傷）。</li><li>👐 順時針<b>輕輕按摩</b>肚子。</li><li>🧘‍♀️ 做些輕鬆的<b>伸展</b>，或側躺把膝蓋縮起來。</li>
+  <li>🍵 喝杯溫溫的飲料，好好休息。</li><li>💊 如果痛到影響上課，<b>請爸媽或醫生</b>幫你選合適的止痛藥，<b>不要自己亂吃藥</b>。</li></ul>`},
+ {ic:'🌙',t:'排卵期是什麼？',h:`<p>在兩次月經中間，卵巢會放出一顆很小很小的<b>卵子</b>，這叫做<b>排卵</b>，大約在<b>下次月經來之前 14 天</b>左右。這是身體自然的運作。</p>
+  <p>排卵前後你可能會發現：</p><ul><li>內褲上的<b>分泌物（白帶）變多</b>，變得透明、滑滑、有彈性，像蛋白一樣——這是正常的。</li><li>有人會覺得<b>單邊下腹悶悶的</b>，通常一兩天就好。</li></ul>
+  <p>剛開始來月經的前幾年，排卵常常還不規律，所以 App 上的排卵期只是<b>大概的預估</b>。分泌物多的日子，可以用<b>護墊</b>保持乾爽。</p>
+  <p>⚠️ 如果分泌物變成<b>黃綠色、有怪味、或下面很癢</b>，要告訴大人去看醫生。</p>`},
+ {ic:'🌈',t:'月經前的煩躁：經前症候群（PMS）',h:`<p>月經來之前幾天，身體的荷爾蒙會變化，有些人會：</p><ul><li>容易生氣、想哭、心情低落</li><li>胸部脹痛、肚子脹</li><li>長痘痘、特別想吃甜的</li><li>覺得很累</li></ul>
+  <p>這叫做<b>經前症候群（PMS）</b>，月經來了之後通常就會好轉。這不是你的錯，跟家人說「我月經快來了，有點煩」，大家會更了解你 🤗。在花朵日記記錄心情，可以看看自己是不是也有這個規律。</p>`},
+ {ic:'🧒',t:'青春期身體的其他變化',h:`<ul><li>🌱 <b>長高、體重增加</b>：這是身體在長大、需要更多能量，非常正常。不要因為體重變多就不吃飯，吃得均衡最重要。</li>
+  <li>👙 <b>胸部發育</b>：可能會有點脹痛，可以換穿舒服的少女內衣。</li><li>🌿 <b>腋下和私密處長出毛髮</b>。</li><li>💦 <b>流汗變多</b>：每天洗澡、換乾淨衣服。</li>
+  <li>😖 <b>長痘痘</b>：每天用溫和的洗面乳洗臉，不要用手擠。</li><li>💭 <b>心情容易起伏</b>：有煩惱可以跟信任的大人聊聊。</li></ul>
+  <p>每個人開始變化的時間都不一樣，早一點或晚一點都沒關係，你就是你 🌸。</p>`},
+ {ic:'🚨',t:'什麼時候要告訴大人、去看醫生？',h:`<p>遇到下面的情況，一定要告訴爸媽或學校護理師：</p><ul>
+  <li>月經<b>超過 7 天</b>還沒結束</li><li><b>每 1–2 小時</b>就要換一片，而且整片濕透</li><li>血塊比<b>一元硬幣</b>還大</li>
+  <li>經痛痛到<b>沒辦法上學</b>，或熱敷、休息都沒用</li><li>常常<b>頭暈、臉色蒼白、很容易累</b>（可能是貧血）</li>
+  <li>兩次月經<b>間隔少於 21 天</b>，或已經規律後又<b>超過 3 個月</b>沒來</li><li>分泌物顏色奇怪、有怪味、很癢</li></ul>
+  <p>看婦產科不用害怕，醫生通常會先問問題、聽你說，很多時候不需要做檢查。你可以把花朵日記的圖表給醫生看，對醫生很有幫助！</p>`},
+ {ic:'❓',t:'常見問題 Q&A',h:`<p><b>Q：月經來可以上體育課嗎？</b><br>A：可以！適度運動還能減輕經痛。真的很不舒服就跟老師說要休息。</p>
+  <p><b>Q：可以游泳嗎？</b><br>A：使用衛生棉不能下水（會吸水）。這幾天可以先休息，或之後和媽媽討論其他月經用品。</p>
+  <p><b>Q：別人看得出來我月經來了嗎？</b><br>A：看不出來的！衛生棉很薄，穿好就不明顯。</p>
+  <p><b>Q：褲子弄髒了怎麼辦？</b><br>A：先別慌，把外套綁在腰上，去保健室或廁所處理。回家後用<b>冷水</b>搓洗，比熱水更容易洗掉血漬。</p>
+  <p><b>Q：經血是咖啡色的，正常嗎？</b><br>A：正常。月經剛開始和快結束時，血流得比較慢，顏色就會偏咖啡色或暗紅色。</p>`},
+];
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){toast('這台裝置不支援發音')}}
+const QUIZ=[
+ ['月經的英文最常用的說法是？',['period','pen','pad'],0,'period 是最常用的說法，正式一點可以說 menstruation。'],
+ ['白天大約多久要換一次衛生棉？',['一整天換一次','2–4 小時','只要沒滿就不用換'],1,'2–4 小時換一次，保持乾爽最舒服。'],
+ ['睡覺時適合用哪一種衛生棉？',['護墊','夜用型','日用型'],1,'夜用型比較長、後面比較寬，躺著不容易漏。'],
+ ['用過的衛生棉要怎麼處理？',['丟進馬桶沖掉','捲起來包好丟垃圾桶','直接放在地上'],1,'丟馬桶會塞住喔！要包好丟垃圾桶。'],
+ ['剛開始來月經的前幾年，週期不規律是？',['很正常的','一定生病了','代表不會再來'],0,'青春期身體還在調整，不規律很常見。'],
+ ['月經期間可以洗澡嗎？',['不可以','可以，淋浴比較好','只能擦澡'],1,'可以洗澡洗頭，保持清潔很重要。'],
+ ['經痛時哪一個方法比較好？',['熱敷肚子','吃很多冰','自己亂吃藥'],0,'熱敷、休息、輕輕按摩都有幫助；吃藥要經過大人同意。'],
+ ['下面哪一種情況要告訴大人？',['月經來了 4 天','月經超過 7 天還沒結束','月經第一天有點肚子悶'],1,'超過 7 天、量非常多、痛到無法上學，都要告訴大人。'],
+ ['“I have cramps.” 是什麼意思？',['我有經痛','我很餓','我想睡覺'],0,'cramps 就是經痛、抽痛的意思。'],
+ ['排卵期前後，分泌物變多變透明是？',['正常的身體變化','生病了','月經來了'],0,'這是正常的，可以用護墊保持乾爽。'],
+];
+let qi=0,qScore=0,qAns=false;
+function renderQuiz(){const el=$('#quiz');if(!el)return;
+  if(qi>=QUIZ.length){const st=Math.round(qScore/QUIZ.length*5);if(qScore>S.quizBest&&!isViewer()){S.quizBest=qScore;save()}
+    el.innerHTML=`<p class="stars">${'⭐'.repeat(st)}${'☆'.repeat(5-st)}</p><p><b>答對 ${qScore} / ${QUIZ.length} 題！</b>${qScore===QUIZ.length?' 太厲害了，你是月經小博士 🎓':' 再讀讀上面的小知識，下次一定更好！'}</p>
+    <p class="small muted">最佳紀錄：${Math.max(S.quizBest,qScore)} 題</p><button class="btn pri" onclick="qi=0;qScore=0;renderQuiz()">再玩一次</button>`;return}
+  const [q,o]=QUIZ[qi];qAns=false;
+  el.innerHTML=`<p class="small muted" style="margin:0">第 ${qi+1} / ${QUIZ.length} 題</p><p class="q">${q}</p>${o.map((t,i)=>`<button class="opt" onclick="answer(${i},this)">${t}</button>`).join('')}<p id="qExp" class="small"></p>`}
+function answer(i,el){if(qAns)return;qAns=true;const [,,a,exp]=QUIZ[qi];const btns=document.querySelectorAll('#quiz .opt');
+  btns[a].classList.add('right');if(i!==a)el.classList.add('wrong');else qScore++;
+  $('#qExp').innerHTML=(i===a?'✅ 答對了！':'💡 ')+exp+`<br><button class="btn" style="margin-top:8px" onclick="qi++;renderQuiz()">${qi+1<QUIZ.length?'下一題 →':'看結果'}</button>`}
+function renderLearn(){$('#learn').innerHTML=LEARN.map(x=>`<details class="k"><summary><span class="ic">${x.ic}</span>${x.t}</summary><div class="body">${x.h}</div></details>`).join('')+
+  `<details class="k" open><summary><span class="ic">🎓</span>月經小博士測驗</summary><div class="body quiz" id="quiz"></div></details>`;renderQuiz()}
+
+/* ========= 啟動 ========= */
+function renderAll(){
+  const v=isViewer(),d=D(),nm=d.profile?.name;
+  document.body.classList.toggle('viewer',v);
+  $('#appTitle').textContent=v?`${nm||'她'}的花朵日記`:'我的花朵日記';
+  $('#who').textContent=!v&&S.profile.birthday?ageText(S.profile.birthday).replace(/ \d+ 個月/,''):'';
+  if(v&&VIEW)$('#viewbar').textContent=`👀 你正在觀看 ${nm||'她'} 分享的日記（只能看，不能改）`;
+  renderBanners();renderHero();renderDay();renderTip();renderMe();
+  if($('#p-cal').classList.contains('on'))renderCal();if($('#p-chart').classList.contains('on'))renderCharts();
+}
+function boot(){
+  const needWelcome=!S.role;$('#welcome').classList.toggle('hide',!needWelcome);$('#app').classList.toggle('hide',needWelcome);$('#tabs').classList.toggle('hide',needWelcome);
+  applyTheme();if(needWelcome)return;
+  selDate=todayS();renderAll();
+  if(isViewer())pullView(false).then(checkNotify);else{checkNotify();if(S.share.on)pushShare(false)}
+}
+(async()=>{
+  await load();
+  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if(isViewer()){const c=await kvGet('viewCache');if(c)VIEW=c}
+  renderLearn();
+  if(parseViewHash()&&await enterViewFromHash())return;
+  boot();
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.role){if(selDate>todayS())selDate=todayS();
+    if(isViewer())pullView(false);else{renderAll();checkNotify()}}});
+})();
+</script>
+</body>
+</html>
