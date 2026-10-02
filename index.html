@@ -429,8 +429,8 @@ function periods(days){
   const keys=Object.keys(days).filter(k=>days[k].flow>0).sort();
   const runs=[];let cur=null;
   for(const k of keys){if(cur&&diff(cur.end,k)<=2){cur.end=k;cur.list.push(k)}else{cur={end:k,list:[k]};runs.push(cur)}}
-  return runs.filter(r=>r.list.some(k=>days[k].flow>=2)).map(r=>{
-    const start=r.list.find(k=>days[k].flow>=2);return {start,end:r.end,len:diff(start,r.end)+1}});
+  /* 只要有流血就從第一天算起（第一天量少也算）；以前「單獨一天的一點點」當作偶發點狀出血不算月經（今天/昨天的先算，可能是月經剛開始） */
+  const T=todayS();return runs.filter(r=>r.list.length>=2||r.list.some(k=>days[k].flow>=2)||diff(r.end,T)<=1).map(r=>({start:r.list[0],end:r.end,len:diff(r.list[0],r.end)+1}));
 }
 function calc(d=D()){
   const days=d.days||{},T=todayS(),P=periods(days),cyc=[];
