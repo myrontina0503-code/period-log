@@ -141,6 +141,7 @@ details.k .body li{margin:4px 0}
 .quiz .opt.right{background:var(--teal-soft);border-color:var(--teal)}
 .quiz .opt.wrong{background:var(--accent-soft);border-color:var(--accent)}
 .stars{font-size:22px;letter-spacing:2px}
+.dsel{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:6px}
 /* 貓咪 */
 .cat{display:inline-block;vertical-align:middle;flex:none}
 header.top h1{display:flex;align-items:center;gap:6px}
@@ -255,9 +256,9 @@ body:not(.viewer) .viewer-only{display:none!important}
     <div class="card owner-only">
       <h2>👧 我的資料</h2>
       <label class="f">名字或暱稱</label><input type="text" id="pfName" maxlength="20">
-      <label class="f">生日</label><input type="date" id="pfBirth">
+      <label class="f">生日</label><div class="dsel" id="pfBirth"></div>
       <div class="small muted" id="pfAge" style="margin-top:4px"></div>
-      <label class="f">第一次月經（初經）日期 <span class="small">（選填）</span></label><input type="date" id="pfMen">
+      <label class="f">第一次月經（初經）日期 <span class="small">（選填）</span></label><div class="dsel" id="pfMen"></div>
       <div class="row" style="margin-top:12px"><button class="btn pri" onclick="saveProfile()">儲存</button><span class="saved" id="pfSaved"></span></div>
     </div>
 
@@ -266,8 +267,8 @@ body:not(.viewer) .viewer-only{display:none!important}
     <div class="card" id="growthEdit">
       <h2>🌱 身高體重記錄</h2>
       <div class="owner-only">
-        <div class="row" style="flex-wrap:nowrap">
-          <input type="date" id="gDate" style="flex:1.3">
+        <label class="f" style="margin-top:0">日期</label><div class="dsel" id="gDate"></div>
+        <div class="row" style="flex-wrap:nowrap;margin-top:8px">
           <input type="number" id="gCm" placeholder="身高 cm" inputmode="decimal" step="0.1" style="flex:1">
           <input type="number" id="gKg" placeholder="體重 kg" inputmode="decimal" step="0.1" style="flex:1">
         </div>
@@ -466,7 +467,7 @@ let selDate=todayS(),calYM=null;
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id==='p-'+p));
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
-  window.scrollTo(0,0);if(p==='chart')renderCharts();if(p==='cal')renderCal()}
+  window.scrollTo(0,0);if(p==='me')renderProfileForm();if(p==='chart')renderCharts();if(p==='cal')renderCal()}
 
 /* ========= 今天 ========= */
 function ageText(b){if(!b)return '';const n=new Date(),d=pd(b);let y=n.getFullYear()-d.getFullYear(),m=n.getMonth()-d.getMonth();
@@ -536,11 +537,16 @@ function renderDay(){
     <label class="f">💭 心情</label>
     <div class="mood">${MOOD.map((m,i)=>`<div class="chip ${e.mood===i?'on':''}" onclick="setEntry(selDate,{mood:entry(selDate).mood===${i}?null:${i}});renderDay()"><b>${m[0]}</b>${m[1]}</div>`).join('')}</div>
     <label class="f">😴 昨晚睡了幾小時</label>
-    <input type="number" inputmode="decimal" step="0.5" min="0" max="16" value="${e.sleep||''}" placeholder="例如 8" onchange="setEntry(selDate,{sleep:this.value?+this.value:0})">
+    <input id="dSleep" type="number" inputmode="decimal" step="0.5" min="0" max="16" value="${e.sleep||''}" placeholder="例如 8" onchange="setEntry(selDate,{sleep:this.value?+this.value:0})">
     <label class="f">📝 悄悄話日記 <span class="small">（${S.share.on&&S.share.notes?'會分享給家人看':'只有自己看得到'}）</span></label>
-    <textarea rows="3" placeholder="今天身體有什麼感覺？發生了什麼事？" onchange="setEntry(selDate,{note:this.value.trim()})">${esc(e.note||'')}</textarea>
+    <textarea id="dNote" rows="3" placeholder="今天身體有什麼感覺？發生了什麼事？" onchange="setEntry(selDate,{note:this.value.trim()})">${esc(e.note||'')}</textarea>
+    <button class="btn pri big" style="width:100%;margin-top:14px" onclick="saveDay()">💾 儲存${selDate===todayS()?'今天':'這天'}的記錄</button>
     <div class="saved" id="daySaved"></div>`;
 }
+async function saveDay(){const sl=$('#dSleep').value,nt=$('#dNote').value.trim();
+  setEntry(selDate,{sleep:sl?+sl:0,note:nt});await kvSet('state',S);
+  if(S.share.on){clearTimeout(pushTimer);pushShare(false)}
+  renderAll();toast((entry(selDate).up?'存好了！':'這天還沒有填任何東西喔')+(entry(selDate).up?'佩佩今天也很棒 🐱':''))}
 function toggleSym(s,el){const e=entry(selDate),a=new Set(e.sym||[]);a.has(s)?a.delete(s):a.add(s);setEntry(selDate,{sym:[...a]});el.classList.toggle('on')}
 function periodStart(){const T=todayS();selDate=T;const e=S.days[T]||{};setEntry(T,{flow:e.flow>=2?e.flow:3,ended:false});renderAll();
   toast('記下來了！記得 2–4 小時換一次衛生棉 💗')}
@@ -665,10 +671,9 @@ function lineChart(pts,title,color){
 
 /* ========= 我的 ========= */
 function renderMe(){
-  const p=S.profile;$('#pfName').value=p.name||'';$('#pfBirth').value=p.birthday||'';$('#pfMen').value=p.menarche||'';
+  const p=S.profile;
   $('#pfAge').textContent=p.birthday?'今年 '+ageText(p.birthday):'';
   $('#setRemind').value=S.settings.remind;$('#setOv').checked=S.settings.ov!==false;
-  $('#gDate').value=$('#gDate').value||todayS();
   const g=(D().growth||[]).slice().sort((a,b)=>a.date<b.date?1:-1);
   $('#gList').innerHTML=g.length?g.map(x=>`<div class="it"><span>${x.date.replace(/-/g,'/')}</span><span>${x.cm?x.cm+' 公分':''}</span><span>${x.kg?x.kg+' 公斤':''}</span>${isViewer()?'':`<button class="x" onclick="delGrowth('${x.id}')" aria-label="刪除">×</button>`}</div>`).join('')
     :'<div class="empty">還沒有記錄</div>';
@@ -679,8 +684,21 @@ function renderMe(){
   $('#notifyState').textContent=!('Notification' in window)?'這個瀏覽器不支援通知。iPhone 需先「加入主畫面」再從主畫面打開才能開通知。':
     Notification.permission==='granted'?'✅ 通知已開啟（打開 App 時會跳出提醒）':Notification.permission==='denied'?'通知被關掉了，可以到手機設定裡打開。':'';
 }
-function saveProfile(){S.profile={name:$('#pfName').value.trim(),birthday:$('#pfBirth').value,menarche:$('#pfMen').value};save();renderAll();$('#pfSaved').textContent='✓ 已儲存'}
-function addGrowth(){const date=$('#gDate').value||todayS(),cm=+$('#gCm').value||0,kg=+$('#gKg').value||0;if(!cm&&!kg){toast('請輸入身高或體重');return}
+/* 年／月／日 三個下拉選單（避免手機日期欄位只能選到月） */
+function dateSel(el,val,y0,y1,optional){const [vy,vm,vd]=(val||'').split('-').map(Number);
+  const opt=(a,b,v,u)=>(optional?`<option value="">${u}</option>`:'')+Array.from({length:b-a+1},(_,i)=>a+i).map(n=>`<option value="${n}" ${n===v?'selected':''}>${n}${u}</option>`).join('');
+  el.innerHTML=`<select data-k="y">${opt(y0,y1,vy,'年')}</select><select data-k="m">${opt(1,12,vm,'月')}</select><select data-k="d">${opt(1,31,vd,'日')}</select>`;
+  const fix=()=>{const y=+el.children[0].value,m=+el.children[1].value,ds=el.children[2];if(!y||!m)return;const n=new Date(y,m,0).getDate();
+    [...ds.options].forEach(o=>{if(o.value)o.disabled=+o.value>n});if(+ds.value>n)ds.value=n};
+  el.onchange=fix;fix()}
+function getSel(el){const [y,m,d]=[...el.children].map(x=>x.value);return y&&m&&d?`${y}-${pad(m)}-${pad(d)}`:''}
+function renderProfileForm(){const p=S.profile,Y=new Date().getFullYear();$('#pfName').value=p.name||'';
+  dateSel($('#pfBirth'),p.birthday,Y-25,Y,true);dateSel($('#pfMen'),p.menarche,Y-10,Y,true);dateSel($('#gDate'),todayS(),Y-10,Y,false);
+  $('#pfAge').textContent=p.birthday?'今年 '+ageText(p.birthday):''}
+function saveProfile(){const b=getSel($('#pfBirth')),mn=getSel($('#pfMen'));
+  if(b>todayS()||mn>todayS()){alert('日期不能是未來喔');return}
+  S.profile={name:$('#pfName').value.trim(),birthday:b,menarche:mn};save();renderAll();$('#pfSaved').textContent='✓ 已儲存'}
+function addGrowth(){const date=getSel($('#gDate'))||todayS(),cm=+$('#gCm').value||0,kg=+$('#gKg').value||0;if(!cm&&!kg){toast('請輸入身高或體重');return}
   S.growth.push({id:uid(),date,cm,kg});$('#gCm').value='';$('#gKg').value='';save();renderAll();toast('記下來了 🌱')}
 function delGrowth(id){if(!confirm('刪除這筆記錄？'))return;S.growth=S.growth.filter(x=>x.id!==id);save();renderAll()}
 function renderTheme(){const t=S.settings.theme||'auto';
@@ -892,7 +910,7 @@ function boot(){
   $('#hdrCat').innerHTML=catSvg(30,'happy');$('#welCat').innerHTML=catSvg(130,'happy',true);
   const needWelcome=!S.role;$('#welcome').classList.toggle('hide',!needWelcome);$('#app').classList.toggle('hide',needWelcome);$('#tabs').classList.toggle('hide',needWelcome);
   applyTheme();if(needWelcome)return;
-  selDate=todayS();renderAll();
+  selDate=todayS();renderAll();renderProfileForm();
   if(isViewer())pullView(false).then(checkNotify);else{checkNotify();if(S.share.on)pushShare(false)}
 }
 (async()=>{
